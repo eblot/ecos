@@ -64,14 +64,6 @@ CFLAGS := $(subst -finit-priority,,$(CFLAGS))
 # -fvtable-gc is known to be broken in all recent GCC.
 CFLAGS := $(subst -fvtable-gc,,$(CFLAGS))
 
-# To support more recent GCC whilst preserving existing behaviour, we need
-# to increase the inlining limit globally from the default 600. Note this
-# will break GCC 2.95 based tools and earlier. You must use "make OLDGCC=1"
-# to avoid this.
-ifneq ($(OLDGCC),1)
-CFLAGS := -finline-limit=7000 $(CFLAGS)
-endif
-
 # Separate C++ flags out from C flags.
 ACTUAL_CFLAGS = $(CFLAGS)
 ACTUAL_CFLAGS := $(subst -fno-rtti,,$(ACTUAL_CFLAGS))
