@@ -437,6 +437,8 @@ bool generate_makefile (const CdlConfiguration config, const CdlBuildInfo_Loadab
 		fprintf (stream, "\nOBJECTS := $(COMPILE:.cxx=.o.d)\n");
 		fprintf (stream, "OBJECTS := $(OBJECTS:.cpp=.o.d)\n");
 		fprintf (stream, "OBJECTS := $(OBJECTS:.c=.o.d)\n");
+		fprintf (stream, "OBJECTS := $(OBJECTS:.m=.o.d)\n");
+		fprintf (stream, "OBJECTS := $(OBJECTS:.mm=.o.d)\n");
 		fprintf (stream, "OBJECTS := $(OBJECTS:.S=.o.d)\n\n");
 		fprintf (stream, "$(LIBRARY).stamp: $(OBJECTS)\n");
 		fprintf (stream, "ifeq ($(VERBOSE),1)\n");
