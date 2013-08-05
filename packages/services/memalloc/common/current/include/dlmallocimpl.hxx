@@ -107,7 +107,7 @@ public:
         Cyg_dlmalloc_size_t size;      /* Size in bytes, including overhead. */
         struct malloc_chunk* fd;   /* double links -- used only if free. */
         struct malloc_chunk* bk;
-    };
+    } malloc_chunk;
     
 protected:
     /* The first value returned from sbrk */

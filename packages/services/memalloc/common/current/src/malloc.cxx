@@ -116,7 +116,7 @@ Cyg_Mempool_Joined<CYGCLS_MEMALLOC_MALLOC_IMPL> cyg_memalloc_mallocpool
 
 // FUNCTIONS
 
-void *
+externC void *
 malloc( size_t size )
 {
     void *data_ptr;
@@ -152,7 +152,7 @@ malloc( size_t size )
 } // malloc()
 
 
-void
+externC void
 free( void *ptr )
 {
     cyg_bool freeret CYGBLD_ATTRIB_UNUSED;
@@ -171,13 +171,14 @@ free( void *ptr )
     freeret = POOL.free( (cyg_uint8 *) ptr );
 
     CYG_ASSERT( freeret , "Couldn't free!" );
+    (void) freeret;
 
     CYG_REPORT_RETURN();
 
 } // free()
 
 
-void *
+externC void *
 calloc( size_t nmemb, size_t size )
 {
     void *data_ptr;

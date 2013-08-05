@@ -398,7 +398,7 @@ cdl_package CYGPKG_MEMALLOC {
             display "Additional compiler flags"
             flavor  data
             no_define
-            default_value { "" }
+            default_value { "-Wno-self-assign" }
             description   "
                 This option modifies the set of compiler flags for
                 building this package. These flags are used in addition
