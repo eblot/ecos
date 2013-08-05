@@ -80,6 +80,7 @@
 // This #include should be moved to an implementation-specific
 // header.
 #include <cctype>
+#include <string.h>
 
 // Now for some eCos host-side infrastructure headers.
 //
