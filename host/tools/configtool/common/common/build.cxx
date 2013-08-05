@@ -53,7 +53,7 @@
 #include "flags.hxx"
 #include "build.hxx"
 
-// Two methods of generating Cygwin filenames
+// Four methods of generating Cygwin filenames
 // ECOS_USE_CYGDRIVE = 0: use cygwin_conv_to_posix_path() - Cygwin-hosted builds only
 // ECOS_USE_CYGDRIVE = 1: use e.g. /cygdrive/c/
 // ECOS_USE_CYGDRIVE = 2: use e.g. c:/ notation
@@ -200,7 +200,7 @@ std::string cygpath (const std::string input) {
 
         RegCloseKey(hKey);
     }
-#endif
+#endif // ECOS_USE_REGISTRY
     strCygdrive = strCygdrive + "/";
 
 	for (unsigned int n = 0; n < path.size (); n++) { // for each char
@@ -246,7 +246,7 @@ std::string cygpath (const std::string input) {
     for (unsigned int n = 0; n < output1.size (); n++) { // for each char
     	output += ('\\' == output1 [n]) ? '/' : output1 [n]; // convert backslash to slash
 	}
-#else
+#else // ECOS_USE_CYGDRIVE
 	for (unsigned int n = 0; n < path.size (); n++) { // for each char
 		if ((1 == n) && (':' == path [n])) { // if a DOS logical drive letter is present
 			output = "//" + output; // convert to Cygwin notation
@@ -254,9 +254,8 @@ std::string cygpath (const std::string input) {
 			output += ('\\' == path [n]) ? '/' : path [n]; // convert backslash to slash
 		}
 	}
-#endif
-    // ECOS_USE_CYGDRIVE
-#endif
+#endif // ECOS_USE_CYGDRIVE
+#endif // _WIN32 || __CYGWIN__
 	return output;
 #else
 	return input;
@@ -440,8 +439,15 @@ bool generate_makefile (const CdlConfiguration config, const CdlBuildInfo_Loadab
 		fprintf (stream, "OBJECTS := $(OBJECTS:.c=.o.d)\n");
 		fprintf (stream, "OBJECTS := $(OBJECTS:.S=.o.d)\n\n");
 		fprintf (stream, "$(LIBRARY).stamp: $(OBJECTS)\n");
+		fprintf (stream, "ifeq ($(VERBOSE),1)\n");
 		fprintf (stream, "\t$(AR) rcs $(PREFIX)/lib/$(@:.stamp=) $(foreach obj,$?,$(if $(obj:%%.o=),$(dir $(obj))$(OBJECT_PREFIX)_$(notdir $(obj:.o.d=.o)),$(obj)))\n");
+		fprintf (stream, "\tcat $(foreach obj,$^,$(obj:.o=.o.d)) > $(@:.stamp=.deps)\n");
+		fprintf (stream, "else\n");
+		fprintf (stream, "\t@echo \" [AR] $(subst $(REPOSITORY)/,,$(LIBRARY))\"\n");
+		fprintf (stream, "\t@$(AR) rcs $(PREFIX)/lib/$(@:.stamp=) $(foreach obj,$?,$(if $(obj:%%.o=),$(dir $(obj))$(OBJECT_PREFIX)_$(notdir $(obj:.o.d=.o)),$(obj)))\n");
 		fprintf (stream, "\t@cat $(foreach obj,$^,$(obj:.o=.o.d)) > $(@:.stamp=.deps)\n");
+		fprintf (stream, "endif\n");
+		fprintf (stream, "\t@cat $^ > $(@:.stamp=.deps)\n");
 		fprintf (stream, "\t@touch $@\n\n");
 	}	
 
@@ -546,16 +552,28 @@ bool generate_toplevel_makefile (const CdlConfiguration config, const std::strin
 	fprintf (stream, "build: headers $(PREFIX)/include/pkgconf/ecos.mak\n");
 	for (make = 0; make < info_make_vector.size (); make++) { // for each make
 		if (info_make_vector [make].loadable->makes [info_make_vector [make].make].priority < 100) { // if priority higher than default complilation
+			fprintf (stream, "ifeq ($(VERBOSE),1)\n");
 			fprintf (stream, "\t$(MAKE) -r -C %s %s\n", info_make_vector [make].loadable->directory.c_str (), resolve_tokens (info_make_vector [make].loadable->makes [info_make_vector [make].make].target).c_str ());
+			fprintf (stream, "else\n");
+			fprintf (stream, "\t@$(MAKE) -r -C %s %s\n", info_make_vector [make].loadable->directory.c_str (), resolve_tokens (info_make_vector [make].loadable->makes [info_make_vector [make].make].target).c_str ());
+			fprintf (stream, "endif\n");
 		}
 	}
 	for (loadable = 0; loadable < info_vector.size (); loadable++) { // for each buildable loaded package
 		const std::string source_path = info_vector [loadable].directory;
+		fprintf (stream, "ifeq ($(VERBOSE),1)\n");
 		fprintf (stream, "\t$(MAKE) -r -C %s $@\n", source_path.c_str ());
+		fprintf (stream, "else\n");
+		fprintf (stream, "\t@$(MAKE) -r -C %s $@\n", source_path.c_str ());
+		fprintf (stream, "endif\n");
 	}
 	for (make = 0; make < info_make_vector.size (); make++) { // for each make
 		if (info_make_vector [make].loadable->makes [info_make_vector [make].make].priority >= 100) { // if priority lower than or equal to default complilation
+			fprintf (stream, "ifeq ($(VERBOSE),1)\n");
 			fprintf (stream, "\t$(MAKE) -r -C %s %s\n", info_make_vector [make].loadable->directory.c_str (), resolve_tokens (info_make_vector [make].loadable->makes [info_make_vector [make].make].target).c_str ());
+			fprintf (stream, "else\n");
+			fprintf (stream, "\t@$(MAKE) -r -C %s %s\n", info_make_vector [make].loadable->directory.c_str (), resolve_tokens (info_make_vector [make].loadable->makes [info_make_vector [make].make].target).c_str ());
+			fprintf (stream, "endif\n");
 		}
 	}
 	fprintf (stream, "\t@echo $@ finished\n\n");
@@ -563,21 +581,33 @@ bool generate_toplevel_makefile (const CdlConfiguration config, const std::strin
 	fprintf (stream, "clean:\n");
 	for (loadable = 0; loadable < info_vector.size (); loadable++) { // for each buildable loaded package
 		const std::string source_path = info_vector [loadable].directory;
+		fprintf (stream, "ifeq ($(VERBOSE),1)\n");
 		fprintf (stream, "\t$(MAKE) -r -C %s $@\n", source_path.c_str ());
+		fprintf (stream, "else\n");
+		fprintf (stream, "\t@$(MAKE) -r -C %s $@\n", source_path.c_str ());
+		fprintf (stream, "endif\n");
 	}
 	fprintf (stream, "\t@echo $@ finished\n\n");
 
 	fprintf (stream, "tests: build\n");
 	for (loadable = 0; loadable < info_vector.size (); loadable++) { // for each buildable loaded package
 		const std::string source_path = info_vector [loadable].directory;
+		fprintf (stream, "ifeq ($(VERBOSE),1)\n");
 		fprintf (stream, "\t$(MAKE) -r -C %s $@\n", source_path.c_str ());
+		fprintf (stream, "else\n");
+		fprintf (stream, "\t@$(MAKE) -r -C %s $@\n", source_path.c_str ());
+		fprintf (stream, "endif\n");
 	}
 	fprintf (stream, "\t@echo $@ finished\n\n");
 
 	fprintf (stream, "headers:\n");
 	for (loadable = 0; loadable < info_vector.size (); loadable++) { // for each buildable loaded package
 		const std::string source_path = info_vector [loadable].directory;
+		fprintf (stream, "ifeq ($(VERBOSE),1)\n");
 		fprintf (stream, "\t$(MAKE) -r -C %s $@\n", source_path.c_str ());
+		fprintf (stream, "else\n");
+		fprintf (stream, "\t@$(MAKE) -r -C %s $@\n", source_path.c_str ());
+		fprintf (stream, "endif\n");
 	}
 	fprintf (stream, "\t@echo $@ finished\n\n");
 
