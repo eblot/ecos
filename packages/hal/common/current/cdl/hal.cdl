@@ -69,6 +69,7 @@ cdl_package CYGPKG_HAL {
 
     make -priority 250 {
         <PREFIX>/lib/extras.o: <PREFIX>/lib/libextras.a
+        @echo " [LD] $(subst $(REPOSITORY)/,,$<)"
         $(CC) $(CFLAGS) -fno-profile-arcs -nostdlib -Wl,-r -T /dev/null -Wl,--whole-archive -o $@ $<
     }   
 

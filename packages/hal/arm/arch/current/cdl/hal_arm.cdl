@@ -66,8 +66,9 @@ cdl_package CYGPKG_HAL_ARM {
     # n.b. grep does not behave itself under win32
     make -priority 1 {
         arm.inc : <PACKAGE>/src/hal_mk_defs.c
-        $(CC) $(ACTUAL_CFLAGS) $(INCLUDE_PATH) -Wp,-MD,arm.tmp -o hal_mk_defs.tmp -S $<
-        fgrep .equ hal_mk_defs.tmp | sed s/#// > $@
+        @echo " [CPP] $(subst $(REPOSITORY)/,,$<)"
+        @$(CC) $(ACTUAL_CFLAGS) $(INCLUDE_PATH) -Wp,-MD,arm.tmp -o hal_mk_defs.tmp -S $<
+        @fgrep .equ hal_mk_defs.tmp | sed s/#// > $@
         @echo $@ ": \\" > $(notdir $@).deps
         @tail -n +2 arm.tmp >> $(notdir $@).deps
         @echo >> $(notdir $@).deps
@@ -76,7 +77,8 @@ cdl_package CYGPKG_HAL_ARM {
 
     make {
         <PREFIX>/lib/vectors.o : <PACKAGE>/src/vectors.S
-        $(CC) -Wp,-MD,vectors.tmp $(INCLUDE_PATH) $(ACTUAL_CFLAGS) -c -o $@ $<
+        @echo " [AS] $(subst $(REPOSITORY)/,,$<)"
+        @$(CC) -Wp,-MD,vectors.tmp $(INCLUDE_PATH) $(ACTUAL_CFLAGS) -c -o $@ $<
         @echo $@ ": \\" > $(notdir $@).deps
         @tail -n +2 vectors.tmp >> $(notdir $@).deps
         @echo >> $(notdir $@).deps
@@ -85,7 +87,8 @@ cdl_package CYGPKG_HAL_ARM {
 
     make {
         <PREFIX>/lib/target.ld: <PACKAGE>/src/arm.ld
-        $(CC) -E -P -Wp,-MD,target.tmp -xc $(INCLUDE_PATH) $(ACTUAL_CFLAGS) -o $@ $<
+        @echo " [CPP] $(subst $(REPOSITORY)/,,$<)"
+        @$(CC) -E -P -Wp,-MD,target.tmp -xc $(INCLUDE_PATH) $(ACTUAL_CFLAGS) -o $@ $<
         @echo $@ ": \\" > $(notdir $@).deps
         @tail -n +2 target.tmp >> $(notdir $@).deps
         @echo >> $(notdir $@).deps
@@ -149,8 +152,7 @@ cdl_package CYGPKG_HAL_ARM {
                                                                                   !is_substr(CYGBLD_GLOBAL_CFLAGS, " -mthumb-interwork ") &&
                                                                                    is_substr(CYGBLD_GLOBAL_CFLAGS, " -mno-thumb-interwork ") }
         requires    { !CYGHWR_THUMB && !CYGBLD_ARM_ENABLE_THUMB_INTERWORK implies !is_substr(CYGBLD_GLOBAL_CFLAGS, " -mthumb ") &&
-                                                                                  !is_substr(CYGBLD_GLOBAL_CFLAGS, " -mthumb-interwork ") &&
-                                                                                   is_substr(CYGBLD_GLOBAL_CFLAGS, " -mno-thumb-interwork ") }
+                                                                                  !is_substr(CYGBLD_GLOBAL_CFLAGS, " -mthumb-interwork ") }
         requires    {  CYGHWR_HAL_ARM_BIGENDIAN          implies  is_substr(CYGBLD_GLOBAL_CFLAGS, " -mbig-endian ") }
         requires    { !CYGHWR_HAL_ARM_BIGENDIAN          implies !is_substr(CYGBLD_GLOBAL_CFLAGS, " -mbig-endian ") }
     }
@@ -174,8 +176,7 @@ cdl_package CYGPKG_HAL_ARM {
                                                                                   !is_substr(CYGBLD_GLOBAL_LDFLAGS, " -mthumb-interwork ") &&
                                                                                    is_substr(CYGBLD_GLOBAL_LDFLAGS, " -mno-thumb-interwork ") }
         requires    { !CYGHWR_THUMB && !CYGBLD_ARM_ENABLE_THUMB_INTERWORK implies !is_substr(CYGBLD_GLOBAL_LDFLAGS, " -mthumb ") &&
-                                                                                  !is_substr(CYGBLD_GLOBAL_LDFLAGS, " -mthumb-interwork ") &&
-                                                                                   is_substr(CYGBLD_GLOBAL_LDFLAGS, " -mno-thumb-interwork ") }
+                                                                                  !is_substr(CYGBLD_GLOBAL_LDFLAGS, " -mthumb-interwork ") }
         requires    {  CYGHWR_HAL_ARM_BIGENDIAN          implies  is_substr(CYGBLD_GLOBAL_LDFLAGS, " -mbig-endian ") }
         requires    { !CYGHWR_HAL_ARM_BIGENDIAN          implies !is_substr(CYGBLD_GLOBAL_LDFLAGS, " -mbig-endian ") }
     }
@@ -202,8 +203,7 @@ cdl_package CYGPKG_HAL_ARM {
         legal_values  { (CYGINT_HAL_ARM_ARCH_ARM7 != 0) ? "ARM7" : ""
                         (CYGINT_HAL_ARM_ARCH_ARM9 != 0) ? "ARM9" : ""
                         (CYGINT_HAL_ARM_ARCH_STRONGARM != 0) ? "StrongARM" : ""
-                        (CYGINT_HAL_ARM_ARCH_XSCALE != 0) ? "XScale" : ""
-                        "" }
+                        (CYGINT_HAL_ARM_ARCH_XSCALE != 0) ? "XScale" : "" }
         default_value  { (CYGINT_HAL_ARM_ARCH_ARM7 != 0) ? "ARM7" : 
                          (CYGINT_HAL_ARM_ARCH_ARM9 != 0) ? "ARM9" : 
                          (CYGINT_HAL_ARM_ARCH_STRONGARM != 0) ? "StrongARM" : 

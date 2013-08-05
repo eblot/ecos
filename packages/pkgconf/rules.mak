@@ -82,7 +82,12 @@ ifeq ($(HOST),CYGWIN)
 else
 	@mkdir -p $(dir $@)
 endif
+ifeq ($(VERBOSE),1)
 	$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CFLAGS) -Wp,-MD,$(@:.o.d=.tmp) -o $(dir $@)$(OBJECT_PREFIX)_$(notdir $(@:.o.d=.o)) $<
+else
+	@echo " [CC] $(subst $(REPOSITORY)/,,$<)"
+	@$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CFLAGS) -Wp,-MD,$(@:.o.d=.tmp) -o $(dir $@)$(OBJECT_PREFIX)_$(notdir $(@:.o.d=.o)) $<
+endif
 	@sed -e '/^ *\\/d' -e "s#.*: #$@: #" $(@:.o.d=.tmp) > $@
 	@rm $(@:.o.d=.tmp)
 
@@ -92,7 +97,12 @@ ifeq ($(HOST),CYGWIN)
 else
 	@mkdir -p $(dir $@)
 endif
+ifeq ($(VERBOSE),1)
 	$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CXXFLAGS) -Wp,-MD,$(@:.o.d=.tmp) -o $(dir $@)$(OBJECT_PREFIX)_$(notdir $(@:.o.d=.o)) $<
+else
+	@echo " [CC] $(subst $(REPOSITORY)/,,$<)"
+	@$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CXXFLAGS) -Wp,-MD,$(@:.o.d=.tmp) -o $(dir $@)$(OBJECT_PREFIX)_$(notdir $(@:.o.d=.o)) $<
+endif
 	@sed -e '/^ *\\/d' -e "s#.*: #$@: #" $(@:.o.d=.tmp) > $@
 	@rm $(@:.o.d=.tmp)
 
@@ -102,7 +112,42 @@ ifeq ($(HOST),CYGWIN)
 else
 	@mkdir -p $(dir $@)
 endif
+ifeq ($(VERBOSE),1)
 	$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CXXFLAGS) -Wp,-MD,$(@:.o.d=.tmp) -o $(dir $@)$(OBJECT_PREFIX)_$(notdir $(@:.o.d=.o)) $<
+else
+	@echo " [CC] $(subst $(REPOSITORY)/,,$<)"
+	@$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CXXFLAGS) -Wp,-MD,$(@:.o.d=.tmp) -o $(dir $@)$(OBJECT_PREFIX)_$(notdir $(@:.o.d=.o)) $<
+endif
+	@sed -e '/^ *\\/d' -e "s#.*: #$@: #" $(@:.o.d=.tmp) > $@
+	@rm $(@:.o.d=.tmp)
+
+%.o.d : %.m
+ifeq ($(HOST),CYGWIN)
+	@mkdir -p `cygpath -w "$(dir $@)" | sed "s@\\\\\\\\@/@g"`
+else
+	@mkdir -p $(dir $@)
+endif
+ifeq ($(VERBOSE),1)
+	$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CXXFLAGS) -Wp,-MD,$(@:.o.d=.tmp) -o $(dir $@)$(OBJECT_PREFIX)_$(notdir $(@:.o.d=.o)) $<
+else
+	@echo " [CC] $(subst $(REPOSITORY)/,,$<)"
+	@$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CXXFLAGS) -Wp,-MD,$(@:.o.d=.tmp) -o $(dir $@)$(OBJECT_PREFIX)_$(notdir $(@:.o.d=.o)) $<
+endif
+	@sed -e '/^ *\\/d' -e "s#.*: #$@: #" $(@:.o.d=.tmp) > $@
+	@rm $(@:.o.d=.tmp)
+
+%.o.d : %.mm
+ifeq ($(HOST),CYGWIN)
+	@mkdir -p `cygpath -w "$(dir $@)" | sed "s@\\\\\\\\@/@g"`
+else
+	@mkdir -p $(dir $@)
+endif
+ifeq ($(VERBOSE),1)
+	$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CXXFLAGS) -Wp,-MD,$(@:.o.d=.tmp) -o $(dir $@)$(OBJECT_PREFIX)_$(notdir $(@:.o.d=.o)) $<
+else
+	@echo " [CC] $(subst $(REPOSITORY)/,,$<)"
+	@$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CXXFLAGS) -Wp,-MD,$(@:.o.d=.tmp) -o $(dir $@)$(OBJECT_PREFIX)_$(notdir $(@:.o.d=.o)) $<
+endif
 	@sed -e '/^ *\\/d' -e "s#.*: #$@: #" $(@:.o.d=.tmp) > $@
 	@rm $(@:.o.d=.tmp)
 
@@ -112,7 +157,12 @@ ifeq ($(HOST),CYGWIN)
 else
 	@mkdir -p $(dir $@)
 endif	
+ifeq ($(VERBOSE),1)
 	$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CFLAGS) -Wp,-MD,$(@:.o.d=.tmp) -o $(dir $@)$(OBJECT_PREFIX)_$(notdir $(@:.o.d=.o)) $<
+else
+	@echo " [AS] $(subst $(REPOSITORY)/,,$<)"
+	@$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CFLAGS) -Wp,-MD,$(@:.o.d=.tmp) -o $(dir $@)$(OBJECT_PREFIX)_$(notdir $(@:.o.d=.o)) $<
+endif
 	@sed -e '/^ *\\/d' -e "s#.*: #$@: #" $(@:.o.d=.tmp) > $@
 	@rm $(@:.o.d=.tmp)
 
@@ -125,7 +175,12 @@ ifeq ($(HOST),CYGWIN)
 else
 	@mkdir -p $(dir $@)
 endif
+ifeq ($(VERBOSE),1)
 	$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CFLAGS) -Wp,-MD,$(@:.d=.tmp) -o $(@:.d=.o) $<
+else
+	@echo " [DEP] $(subst $(REPOSITORY)/,,$<)"
+	@$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CFLAGS) -Wp,-MD,$(@:.d=.tmp) -o $(@:.d=.o) $<
+endif
 	@sed -e '/^ *\\/d' -e "s#.*: #$@: #" $(@:.d=.tmp) > $@
 	@rm $(@:.d=.tmp)
 
@@ -135,7 +190,42 @@ ifeq ($(HOST),CYGWIN)
 else
 	@mkdir -p $(dir $@)
 endif
+ifeq ($(VERBOSE),1)
 	$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CXXFLAGS) -Wp,-MD,$(@:.d=.tmp) -o $(@:.d=.o) $<
+else
+	@echo " [DEP] $(subst $(REPOSITORY)/,,$<)"
+	@$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CXXFLAGS) -Wp,-MD,$(@:.d=.tmp) -o $(@:.d=.o) $<
+endif
+	@sed -e '/^ *\\/d' -e "s#.*: #$@: #" $(@:.d=.tmp) > $@
+	@rm $(@:.d=.tmp)
+
+%.d : %.m
+ifeq ($(HOST),CYGWIN)
+	@mkdir -p `cygpath -w "$(dir $@)" | sed "s@\\\\\\\\@/@g"`
+else
+	@mkdir -p $(dir $@)
+endif
+ifeq ($(VERBOSE),1)
+	$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CXXFLAGS) -Wp,-MD,$(@:.d=.tmp) -o $(@:.d=.o) $<
+else
+	@echo " [DEP] $(subst $(REPOSITORY)/,,$<)"
+	@$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CXXFLAGS) -Wp,-MD,$(@:.d=.tmp) -o $(@:.d=.o) $<
+endif
+	@sed -e '/^ *\\/d' -e "s#.*: #$@: #" $(@:.d=.tmp) > $@
+	@rm $(@:.d=.tmp)
+
+%.d : %.mm
+ifeq ($(HOST),CYGWIN)
+	@mkdir -p `cygpath -w "$(dir $@)" | sed "s@\\\\\\\\@/@g"`
+else
+	@mkdir -p $(dir $@)
+endif
+ifeq ($(VERBOSE),1)
+	$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CXXFLAGS) -Wp,-MD,$(@:.d=.tmp) -o $(@:.d=.o) $<
+else
+	@echo " [DEP] $(subst $(REPOSITORY)/,,$<)"
+	@$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CXXFLAGS) -Wp,-MD,$(@:.d=.tmp) -o $(@:.d=.o) $<
+endif
 	@sed -e '/^ *\\/d' -e "s#.*: #$@: #" $(@:.d=.tmp) > $@
 	@rm $(@:.d=.tmp)
 
@@ -145,7 +235,12 @@ ifeq ($(HOST),CYGWIN)
 else
 	@mkdir -p $(dir $@)
 endif
+ifeq ($(VERBOSE),1)
 	$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CXXFLAGS) -Wp,-MD,$(@:.d=.tmp) -o $(@:.d=.o) $<
+else
+	@echo " [DEP] $(subst $(REPOSITORY)/,,$<)"
+	@$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CXXFLAGS) -Wp,-MD,$(@:.d=.tmp) -o $(@:.d=.o) $<
+endif
 	@sed -e '/^ *\\/d' -e "s#.*: #$@: #" $(@:.d=.tmp) > $@
 	@rm $(@:.d=.tmp)
 
@@ -155,7 +250,12 @@ ifeq ($(HOST),CYGWIN)
 else
 	@mkdir -p $(dir $@)
 endif	
+ifeq ($(VERBOSE),1)
 	$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CFLAGS) -Wp,-MD,$(@:.d=.tmp) -o $(@:.d=.o) $<
+else
+	@echo " [DEP] $(subst $(REPOSITORY)/,,$<)"
+	@$(CC) -c $(INCLUDE_PATH) -I$(dir $<) $(ACTUAL_CFLAGS) -Wp,-MD,$(@:.d=.tmp) -o $(@:.d=.o) $<
+endif
 	@sed -e '/^ *\\/d' -e "s#.*: #$@: #" $(@:.d=.tmp) > $@
 	@rm $(@:.d=.tmp)
 
@@ -167,9 +267,19 @@ else
 	@mkdir -p $(dir $@)
 endif	
 ifneq ($(IGNORE_LINK_ERRORS),)
+ifeq ($(VERBOSE),1)
 	-$(CC) -L$(PREFIX)/lib -Ttarget.ld -o $@ $(<:.d=.o) $(LDFLAGS)
 else
+	@echo " [LD] $(subst $(REPOSITORY)/,,$<)"
+	@-$(CC) -L$(PREFIX)/lib -Ttarget.ld -o $@ $(<:.d=.o) $(LDFLAGS)
+endif
+else
+ifeq ($(VERBOSE),1)
 	$(CC) -L$(PREFIX)/lib -Ttarget.ld -o $@ $(<:.d=.o) $(LDFLAGS) 
+else
+	@echo " [LD] $(subst $(REPOSITORY)/,,$<)"
+	@$(CC) -L$(PREFIX)/lib -Ttarget.ld -o $@ $(<:.d=.o) $(LDFLAGS) 
+endif
 endif
 
 # rule to generate all tests and create a dependency file "tests.deps" by
@@ -179,6 +289,8 @@ tests: tests.stamp
 
 TESTS := $(TESTS:.cpp=)
 TESTS := $(TESTS:.cxx=)
+TESTS := $(TESTS:.m=)
+TESTS := $(TESTS:.mm=)
 TESTS := $(TESTS:.c=)
 TESTS := $(TESTS:.S=)
 tests.stamp: $(foreach target,$(TESTS),$(target).d $(PREFIX)/tests/$(PACKAGE)/$(target)$(EXEEXT))
