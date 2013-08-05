@@ -217,7 +217,8 @@ CdlDbParser::new_package(CdlInterpreter interp, int argc, const char* argv[])
                 unsigned int i;
                 interp->locate_subdirs(pkgdir, subdirs);
                 for (i = 0; i < subdirs.size(); i++) {
-                    if (("CVS" == subdirs[i]) || ("cvs" == subdirs[i])) {
+                    if (("CVS" == subdirs[i]) || ("cvs" == subdirs[i]) || \
+                        (".svn" == subdirs[i]) || (".git" == subdirs[i])) {
                         continue;
                     }
                     if ("" != package.script) {
