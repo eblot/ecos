@@ -7,6 +7,10 @@
 
 	* configure: regenerate after update of Tcl macro
 
+2008-08-20  Emmanuel Blot <manu.blot@gmail.com>
+
+    * database.cxx: Ignore SVN directories
+
 2008-08-20  Bart Veer  <bartv@ecoscentric.com>
 
 	* configure: regenerate after update of Tcl macro

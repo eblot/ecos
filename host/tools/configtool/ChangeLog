@@ -1,3 +1,7 @@
+2013-07-13  Emmanuel Blot <manu.blot@gmail.com>
+
+    * common/common/build.cxx: Add build rules for objc & objc++
+
 2012-06-22  John Dallaway  <john@dallaway.org.uk>
 
 	* standalone/wxwin/makefile.gnu: Update linker flags for recent
@@ -116,6 +120,11 @@
 	* standalone/wxwin/configtool.cpp: Search for the eCos repository if
 	the saved location no-longer exists. [ Bugzilla 1000465 ]
  
+2008-10-14  Emmanuel Blot <manu.blot@gmail.com>
+
+    * common/common/build.cxx: Enable silent build with optional verbose
+    mode
+
 2008-08-15  Bart Veer  <bartv@ecoscentric.com>
 
 	* common/common/build.cxx: avoid compiler warning.
