@@ -836,12 +836,6 @@ cdl_exec::report_conflicts()
                     soln_msg += "\n";
                 }
                 
-#if 0
-                // FIXME: currently this member only works for nested sub-transactions.
-                if (transact->user_confirmation_required()) {
-                    msg += "This change affects previous user settings.\n";
-                }
-#endif                
                 dump_string(4, soln_msg);
             }
             transact->cancel();

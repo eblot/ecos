@@ -215,10 +215,6 @@ bool ecConfigToolDoc::OnCreate(const wxString& path, long flags)
 
             // Why should we generate the names at this point, when we only have a temporary filename?
             // Don't do it!
-#if 0
-            wxGetApp().SetStatusText(wxT("Updating build information..."), FALSE);
-            UpdateBuildInfo();
-#endif
         }
     }
     return success;
@@ -229,14 +225,6 @@ bool ecConfigToolDoc::OnSaveDocument(const wxString& filename)
     wxBusyCursor cursor;
 
     const wxString strOldPath(GetFilename());
-
-#if 0
-    bool bSaveAs=(filename!=strOldPath);
-    if(!IsModified() && wxFileExists(filename))
-    {
-        return TRUE;
-    }
-#endif
 
     bool rc=FALSE;
     if (CheckConflictsBeforeSave())
@@ -1016,9 +1004,6 @@ void ecConfigToolDoc::SelectTemplate (const wxString& newTemplate, const wxStrin
 
         if (!GetFilename().IsEmpty())
         { // not a new document
-#if 0 // TODO
-            CopyMLTFiles (); // copy new MLT files to the build tree as necessary
-#endif
         }
         Modify(TRUE);
         wxGetApp().GetMainFrame()->UpdateFrameTitle();
@@ -1037,16 +1022,9 @@ void ecConfigToolDoc::RegenerateData()
     {
         wxMessageBox(_("The eCos memory layout macro CYGHWR_MEMORY_LAYOUT is not defined."), wxGetApp().GetSettings().GetAppName(), wxICON_EXCLAMATION|wxOK);
     }
-    // TODO
-#if 0
-    SwitchMemoryLayout (TRUE); // the hardware template may have changed
-#endif
 
     if (GetDocumentSaved() && !wxGetApp().GetSettings().m_editSaveFileOnly)
         UpdateBuildInfo();
-    
-    // TODO
-    // CConfigTool::GetControlView()->SelectItem(Item(0));
 }
 
 void ecConfigToolDoc::SelectHardware (const wxString& newTemplate)
@@ -1075,14 +1053,6 @@ void ecConfigToolDoc::SelectHardware (const wxString& newTemplate)
         }
 
         RegenerateData();
-
-        // TODO
-#if 0
-        if (!GetFilename().IsEmpty())
-        {
-            CopyMLTFiles (); // copy new MLT files to the build tree as necessary
-        }
-#endif
 
         Modify(TRUE);
         wxGetApp().GetMainFrame()->UpdateFrameTitle();
@@ -1490,28 +1460,6 @@ bool ecConfigToolDoc::ShowExternalHtmlHelp (const wxString& strURL)
             msg.Printf(_("Cannot display %s"), (const wxChar*) strURL);
             wxMessageBox(msg, wxGetApp().GetSettings().GetAppName(), wxICON_EXCLAMATION|wxOK);
         }
-#if 0
-        else
-        {
-            // JACS: I don't think we need to do this. Even on the MFC version, the notification
-            // callback didn't do anything interesting.
-#define ID_HHNOTIFICATION               55017
-
-            // FIXME: Do this the first time only?
-            HH_WINTYPE WinType;
-            HWND wnd;
-            HH_WINTYPE *pWinType=NULL;
-            wxString s = wxGetApp().GetHelpFile() + wxT(">mainwin");
-            wnd = HtmlHelp(hwndCaller, s, HH_GET_WIN_TYPE, (DWORD) &pWinType);
-            WinType=*pWinType;
-            WinType.hwndCaller=hwndCaller;
-            WinType.fsWinProperties|=HHWIN_PROP_TRACKING;
-            WinType.idNotify = ID_HHNOTIFICATION;
-            wnd = HtmlHelp(hwndCaller, wxGetApp().GetHelpFile(), HH_SET_WIN_TYPE, (DWORD) &WinType);
-            rc = TRUE;
-        }
-#endif
-        //wxRemoveFile(strFile);
     }
     return rc;
 
@@ -1534,59 +1482,12 @@ bool ecConfigToolDoc::ShowInternalHtmlHelp (const wxString& strURL)
 
     url = docDir + sep + ecHtmlIndexer::Redirect(docDir, url);
 
-#if 0
-    if (strURL.Left(7) == wxT("http://") || strURL.Left(7) == wxT("file://"))
-        url = strURL;
-    else
-        url = docDir + sep + strURL;
-#endif
-
-    //url = url.Mid(docDir.Length() + 1);
-
     if (wxGetApp().HasHelpController())
     {
         return wxGetApp().GetHelpController().Display(url);
     }
     else
         return FALSE;
-
-    // Old code using MS HTML Help
-#elif 0
-    HWND hwndCaller = ::GetDesktopWindow();
-
-    wxString helpFile(wxGetApp().GetHelpFile());
-    bool rc = FALSE;
-    const ecFileName strFile(HTMLHelpLinkFileName());
-    if (wxFileExists(strFile))
-        wxRemoveFile(strFile);
-
-    wxTextFile f(strFile);
-    if(!ecFileName(helpFile).Exists())
-    {
-        wxString msg;
-        msg.Printf(_("Cannot display help - %s does not exist"), (const wxChar*) helpFile);
-        wxMessageBox(msg, wxGetApp().GetSettings().GetAppName(), wxICON_EXCLAMATION|wxOK);
-    } else if (!f.Create())
-    {
-        wxString msg;
-        msg.Printf(_("Cannot display help - error creating %s"), (const wxChar*) strFile);
-        wxMessageBox(msg, wxGetApp().GetSettings().GetAppName(), wxICON_EXCLAMATION|wxOK);
-    } else
-    {
-        wxString str;
-        str.Printf(_T("<meta HTTP-EQUIV=\"refresh\" CONTENT=\"0;URL=%s\">"), (const wxChar*) strURL);
-        f.AddLine(str);
-        f.Write();
-        f.Close();
-        if(0==HtmlHelp(hwndCaller, wxGetApp().GetHelpFile(), HH_DISPLAY_TOPIC, 0))
-        {
-            wxString msg;
-            msg.Printf(_("Cannot display %s"), (const wxChar*) strURL);
-            wxMessageBox(msg, wxGetApp().GetSettings().GetAppName(), wxICON_EXCLAMATION|wxOK);
-        }
-    }
-    return rc;
-
 #else
     wxMessageBox(_("Sorry, ShowHtmlHelp not yet implemented"), wxGetApp().GetSettings().GetAppName(), wxICON_EXCLAMATION|wxOK);
     return FALSE;
@@ -1814,14 +1715,6 @@ bool ecConfigToolDoc::SetValue (ecConfigItem &ti, double dValue, CdlTransaction 
 
 bool ecConfigToolDoc::SetValue(ecConfigItem &ti, const wxString &strValue, CdlTransaction transaction/*=NULL*/)
 {
-    // TODO
-#if 0
-    // warn the user if a modified memory layout is about to be discarded
-    if (MemoryMap.map_modified () && (ti.Macro () == _T("CYG_HAL_STARTUP")) &&
-        (IDCANCEL == CUtils::MessageBoxFT (MB_OKCANCEL, _T("Changes to the current memory layout will be lost."))))
-        return false;
-#endif
-
     bool rc = FALSE;
 
     switch(ti.GetOptionType())
@@ -1875,11 +1768,6 @@ bool ecConfigToolDoc::SetValue(ecConfigItem &ti, long nValue, CdlTransaction tra
 
     bool rc = FALSE;
 
-    // TODO
-#if 0
-    bool bChangingMemmap = MemoryMap.map_modified () && ((ti.Macro ().Compare (_T ("CYG_HAL_STARTUP")) == 0));
-#endif
-
     if(nValue==ti.Value())
     {
         return TRUE;
@@ -1904,16 +1792,6 @@ bool ecConfigToolDoc::SetValue(ecConfigItem &ti, long nValue, CdlTransaction tra
                 goto Exit;
         };
     }
-
-    // TODO
-#if 0
-    // warn the user if the current memory layout has been changed and will be lost
-    // this will happen when the layout has been modified and the target-platform-startup is changed
-
-    if (bChangingMemmap && IDCANCEL==CUtils::MessageBoxFT(MB_OKCANCEL,_T("Changes to the current memory layout will be lost."))){
-        goto Exit;
-    }
-#endif
 
     // Save state
     if(!ti.SetValue(nValue,transaction)){
@@ -2040,34 +1918,7 @@ int ecConfigToolDoc::GetTestExeNames (wxArrayString& arTestExes, wxArrayString& 
 
 bool ecConfigToolDoc::SaveMemoryMap()
 {
-    // TODO
-#if 0
-    wxString sep(wxFILE_SEP_PATH);
-
-    const wxString strSuffix(wxT("mlt_") + CurrentMemoryLayout ());
-    ecFileName strMLTInstallPkgconfDir(GetInstallTree());
-    strMLTInstallPkgconfDir = strMLTInstallPkgconfDir + ecFileName(wxT("include"));
-    strMLTInstallPkgconfDir = strMLTInstallPkgconfDir + ecFileName(wxT("pkgconf"));
-
-    bool rc=false;
-    if(strMLTInstallPkgconfDir.EC_CreateDirectory(TRUE)){
-        const wxString strMLTInstallBase(strMLTInstallPkgconfDir+ecFileName(strSuffix));
-        const ecFileName strMLTDir (MLTDir());
-
-        if(strMLTDir.EC_CreateDirectory (TRUE))
-        {
-            const wxString strMLTBase (strMLTDir + ecFileName (strSuffix));
-            // TRACE(_T("Saving memory layout to %s\n"), strMLTBase + _T(".mlt"));
-            if(MemoryMap.save_memory_layout (strMLTBase + _T(".mlt"))){
-                // TRACE(_T("Exporting memory layout to %s\n"), strMLTInstallPkgconfDir);
-                rc=MemoryMap.export_files (strMLTInstallBase + _T(".ldi"), strMLTInstallBase + _T(".h"));
-            }
-        }
-    }
-    return rc;
-#else
     return FALSE;
-#endif
 }
 
 bool ecConfigToolDoc::CopyMLTFiles()

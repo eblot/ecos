@@ -103,15 +103,6 @@ bool wxSimpleHtmlParser::ParseFile(const wxString& filename)
                 text += wxT("\n");
         }
 
-#if 0
-        for ( line = textFile.GetFirstLine(); !textFile.Eof(); line = textFile.GetNextLine() )
-        {
-            text += line;
-            if (!textFile.Eof())
-                text += wxT("\n");
-        }
-#endif
-
         return ParseString(text);
     }
     else

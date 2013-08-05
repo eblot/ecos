@@ -628,22 +628,6 @@ bool wxIconStateInfoDB::SetIconId(const wxString& name, int state, bool enabled,
     return TRUE;
 }
 
-#if 0
-wxIcon wxIconStateInfoDB::GetIcon(const wxString& name, int state, bool enabled) const
-{
-    wxASSERT( m_imageList != NULL );
-    
-    wxIconStateInfo* info = FindInfo(name);
-    if (!info)
-        return wxNullIcon;
-    int id = info->GetIconId(state, enabled);
-    if (id < 0)
-        return wxNullIcon;
-    else
-        return m_imageList->GetImage(id); // Doesn't exist
-}
-#endif
-
 /*
 * ecSplitterScrolledWindow
 * This window holds the tree and value windows.

@@ -175,38 +175,6 @@ void ecPlatformsDialog::CreateControls(wxWindow* parent)
     wxASSERT( item7 );
     item0->Add( item7, 2, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-#if 0
-    wxSizer *item0 = new wxBoxSizer( wxVERTICAL );
-
-    wxSizer *item1 = new wxBoxSizer( wxHORIZONTAL );
-
-    wxButton *item2 = new wxButton( parent, ecID_PLATFORMS_MODIFY, "&Modify...", wxDefaultPosition, wxDefaultSize, 0 );
-    item1->Add( item2, 0, wxALIGN_CENTRE|wxALL, 5 );
-
-    wxButton *item3 = new wxButton( parent, ecID_PLATFORMS_ADD, "&Add...", wxDefaultPosition, wxDefaultSize, 0 );
-    item1->Add( item3, 0, wxALIGN_CENTRE|wxALL, 5 );
-
-    wxButton *item4 = new wxButton( parent, ecID_PLATFORMS_DELETE, "&Delete...", wxDefaultPosition, wxDefaultSize, 0 );
-    item1->Add( item4, 0, wxALIGN_CENTRE|wxALL, 5 );
-
-    wxButton *item5 = new wxButton( parent, wxID_OK, "&OK", wxDefaultPosition, wxDefaultSize, 0 );
-    item1->Add( item5, 0, wxALIGN_CENTRE|wxALL, 5 );
-
-    wxButton *item6 = new wxButton( parent, wxID_CANCEL, "&Cancel", wxDefaultPosition, wxDefaultSize, 0 );
-    item1->Add( item6, 0, wxALIGN_CENTRE|wxALL, 5 );
-
-#ifdef __WXGTK__
-    wxButton *contextButton = new wxContextHelpButton( parent );
-    item1->Add( contextButton, 0, wxALIGN_CENTRE|wxALL, 5 );
-#endif
-
-    item0->Add( item1, 0, wxALIGN_CENTRE|wxALL, 0 );
-
-    wxWindow *item7 = parent->FindWindow( ecID_PLATFORMS_LIST );
-    wxASSERT( item7 );
-    item0->Add( item7, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-#endif
-
     parent->SetAutoLayout( TRUE );
     parent->SetSizer( item0 );
     parent->Layout();

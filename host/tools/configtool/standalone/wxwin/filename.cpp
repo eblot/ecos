@@ -325,49 +325,7 @@ const ecFileName ecFileName::Head() const
 time_t ecFileName::LastModificationTime() const
 {
     return wxFileModificationTime(* this);
-    
-#if 0
-    // GetFileAttributes is not available in Win95 so we test the water first
-    static HINSTANCE hInst=LoadLibrary(_T("kernel32.dll"));
-    wxASSERT(hInst);
-    
-#ifdef _UNICODE
-#define GETFILEATTRIBUTESNAME "GetFileAttributesExW"
-#else
-#define GETFILEATTRIBUTESNAME "GetFileAttributesExA"
-#endif // !UNICODE
-    
-    typedef BOOL (WINAPI *GetFileAttributesP)(const wxChar*,GET_FILEEX_INFO_LEVELS,LPVOID);
-    
-    static GetFileAttributesP p=(GetFileAttributesP)GetProcAddress(hInst,GETFILEATTRIBUTESNAME);
-    if(p){
-        WIN32_FILE_ATTRIBUTE_DATA data;
-        
-        if((*p)(*this, GetFileExInfoStandard, (LPVOID)&data)){
-            return data.ftLastWriteTime;
-        }
-    } else {
-        HANDLE h=CreateFile(*this,0,0,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
-        FILETIME ft;
-        if(INVALID_HANDLE_VALUE!=h){
-            BOOL b=::GetFileTime(h,NULL,NULL,&ft);
-            ::CloseHandle(h);
-            if(b){
-                return ft;
-            }
-        }
-    }
-    static FILETIME ftNull={0,0};
-    return ftNull;
-#endif
 }
-
-/* TODO
-bool ecFileName::SetFileAttributes(long dwFileAttributes) const
-{
-return ::SetFileAttributes (*this, dwFileAttributes)!=0;
-}
-*/
 
 bool ecFileName::Exists     () const
 {
@@ -433,25 +391,6 @@ const ecFileName& ecFileName::EC_ExpandEnvironmentStrings()
     return *this;
 }
 
-#if 0
-// Helper for Relative()  psz is in full format.
-ecFileName ecFileName::Drive(const wxChar* psz)
-{
-    if(wxIsalpha(psz[0])){
-        return psz[0];
-    } else if(cSep==psz[0]&&cSep==psz[1]){
-        wxChar *c=_tcschr(psz+2,cSep);
-        if(c){
-            c=_tcschr(c+1,cSep);
-            if(c){
-                return wxString(psz,c-psz);
-            }
-        }
-    }
-    return _T("");
-}
-#endif
-
 ecFileName ecFileName::Relative(const wxChar* compare,const wxChar* current)
 {
 #ifdef __WXMSW__
@@ -509,30 +448,6 @@ bool ecFileName::IsAbsolute() const
         (wxIsalpha(psz[0]) && wxTChar(':')==psz[1]) ||  // starts with [e.g.] "c:\"
         (cSep==psz[0] && cSep==psz[1])));              // UNC
 }
-
-// TODO (?)
-#if 0
-// Return an array of filename pieces.  Plugs '\0's into 'this', which
-// is therefore subsequently only usable as referenced by the returned array.
-const wxChar* *ecFileName::Chop()
-{
-    wxChar *c;
-    // Count the separators
-    int nSeps=0;
-    for(c=_tcschr(m_pchData,cSep);c;c=_tcschr(c+1,cSep)){
-        nSeps++;
-    }
-    const wxChar* *ar=new const wxChar*[2+nSeps]; // +1 for first, +1 for terminating 0
-    ar[0]=m_pchData;
-    int i=1;
-    for(c=_tcschr(m_pchData,cSep);c;c=_tcschr(c+1,cSep)){
-        ar[i++]=c+1;
-        *c=wxTChar('\0');
-    }
-    ar[i]=0;
-    return ar;
-}
-#endif
 
 ecFileName ecFileName::EC_GetTempPath()
 {

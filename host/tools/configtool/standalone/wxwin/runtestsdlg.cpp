@@ -206,34 +206,8 @@ ecRunTestsDialog::ecRunTestsDialog(wxWindow* parent):
     okButton->SetHelpText(_("Closes the dialog."));
     runButton->SetHelpText(_("Runs one or more tests selected in the Executables window."));
     propertiesButton->SetHelpText(_("Shows timeout and connection properties."));
-    //helpButton->SetHelpText(_("Invokes help for the selected dialog."));
 
     Centre(wxBOTH);
-
-    // TODO: Is this necessary?
-#if 0
-    m_prop.Add(_T("Active timeout"),        wxGetApp().GetSettings().GetRunTestsSettings().m_nTimeout);
-    m_prop.Add(_T("Download timeout"),      wxGetApp().GetSettings().GetRunTestsSettings().m_nDownloadTimeout);
-    m_prop.Add(_T("Active timeout type"),   wxGetApp().GetSettings().GetRunTestsSettings().m_nTimeoutType);
-    m_prop.Add(_T("Download timeout type"), wxGetApp().GetSettings().GetRunTestsSettings().m_nDownloadTimeoutType);
-    m_prop.Add(_T("Remote"),                wxGetApp().GetSettings().GetRunTestsSettings().m_bRemote);
-    m_prop.Add(_T("Serial"),                wxGetApp().GetSettings().GetRunTestsSettings().m_bSerial);
-    m_prop.Add(_T("Port"),                  wxGetApp().GetSettings().GetRunTestsSettings().m_strPort);
-    m_prop.Add(_T("Baud"),                  wxGetApp().GetSettings().GetRunTestsSettings().m_nBaud);
-    m_prop.Add(_T("Local TCPIP Host"),      wxGetApp().GetSettings().GetRunTestsSettings().m_strLocalTCPIPHost);
-    m_prop.Add(_T("Local TCPIP Port"),      wxGetApp().GetSettings().GetRunTestsSettings().m_nLocalTCPIPPort);
-    m_prop.Add(_T("Reset Type"),            wxGetApp().GetSettings().GetRunTestsSettings().m_nReset);
-    m_prop.Add(_T("Reset String"),          wxGetApp().GetSettings().GetRunTestsSettings().m_strReset);
-    m_prop.Add(_T("Resource Host"),         wxGetApp().GetSettings().GetRunTestsSettings().m_strResourceHost);
-    m_prop.Add(_T("Resource Port"),         wxGetApp().GetSettings().GetRunTestsSettings().m_nResourcePort);
-    m_prop.Add(_T("Remote Host"),           wxGetApp().GetSettings().GetRunTestsSettings().m_strRemoteHost);
-    m_prop.Add(_T("Remote Port"),           wxGetApp().GetSettings().GetRunTestsSettings().m_nRemotePort);
-    // TODO
-    //m_prop.Add(_T("Recurse"),   executionpage.m_bRecurse);
-    m_prop.Add(_T("Farmed"),                wxGetApp().GetSettings().GetRunTestsSettings().m_bFarmed);
-    // TODO
-    // m_prop.Add(_T("Extension"),executionpage.m_strExtension);
-#endif
 
 #ifdef _DEBUG
     CeCosTrace::EnableTracing(CeCosTrace::TRACE_LEVEL_TRACE);
@@ -561,28 +535,6 @@ void ecRunTestsDialog::FlushBuffer()
     }
 }
 
-#if 0
-void ecRunTestsDialog::OnHelp(wxCommandEvent& event)
-{
-    int sel = m_notebook->GetSelection();
-
-    wxASSERT_MSG( (sel != -1), wxT("A notebook tab should always be selected."));
-
-    wxWindow* page = (wxWindow*) m_notebook->GetPage(sel);
-
-    wxString helpTopic;
-    if (page == m_displayOptions)
-    {
-        helpTopic = wxT("Display options dialog");
-    }
-
-    if (!helpTopic.IsEmpty())
-    {
-        wxGetApp().GetHelpController().KeywordSearch(helpTopic);
-    }
-}
-#endif
-
 // This sets the text for the selected page, but doesn't help
 // when trying to click on a tab: we would expect the appropriate help
 // for that tab. We would need to look at the tabs to do this, from within OnContextHelp -
@@ -590,27 +542,6 @@ void ecRunTestsDialog::OnHelp(wxCommandEvent& event)
 void ecRunTestsDialog::OnPageChange(wxNotebookEvent& event)
 {
     event.Skip();
-#if 0
-    int sel = m_notebook->GetSelection();
-    if (sel < 0)
-        return;
-
-    wxWindow* page = m_notebook->GetPage(sel);
-    if (page)
-    {
-        wxString helpText;
-
-        if (page == m_displayOptions)
-            helpText = _("The display options dialog allows you to change display-related options.");
-        else if (page == m_viewerOptions)
-            helpText = _("The viewer options dialog allows you to configure viewers.");
-        else if (page == m_pathOptions)
-            helpText = _("The path options dialog allows you to change tool paths.");
-        else if (page == m_conflictResolutionOptions)
-            helpText = _("The conflict resolution options dialog allows you to change options related to conflict resolution.");
-        m_notebook->SetHelpText(helpText);
-    }
-#endif
 }
 
 bool ecRunTestsDialog::TransferDataToWindow()
@@ -1093,43 +1024,6 @@ void ecRunTestsSummaryDialog::AddResult (CeCosTest *pTest)
         m_listCtrl->SetItem(nIndex, i+1, arstr[i]);
     }  
 
-#if 0
-    // OLD CODE
-    int i;
-    // TRACE(_T("%s\n"),strResult);
-    // 1999-05-28 10:29:28 nan:0 TX39-jmr3904-sim tx39-jmr3904sim-libc10-signal2.exe Fail 0k/1108k D=0.0/0.0 Total=9.3 E=0.6/300.0 
-    _stscanf(strResult,_T("%s %s %s %s %s %s %s %s %s %s"),
-        strDate.GetBuffer(1+nLength),
-        strTime.GetBuffer(1+nLength),
-        arstr[0].GetBuffer(1+nLength),
-        arstr[1].GetBuffer(1+nLength),
-        arstr[2].GetBuffer(1+nLength),
-        arstr[3].GetBuffer(1+nLength),
-        arstr[4].GetBuffer(1+nLength),
-        arstr[5].GetBuffer(1+nLength),
-        arstr[6].GetBuffer(1+nLength),
-        arstr[7].GetBuffer(1+nLength));
-
-    // Remove before '=' in time fields
-    for(i=5;i<8;i++){
-        TCHAR *pch=_tcschr(arstr[i],_TCHAR('='));
-        if(pch){
-            arstr[i]=pch+1;
-        }
-    }
-    
-    strDate.ReleaseBuffer();
-    strTime.ReleaseBuffer();
-    strDate+=_TCHAR(' ');
-    strDate+=strTime;
-    int nItem=m_List.GetItemCount();
-    m_List.InsertItem(nItem,strDate);
-    m_List.SetItemData(nItem,nItem);// to support sorting
-    for(i=0;i<8;i++){
-        m_List.SetItemText(nItem,1+i,arstr[i]);
-        arstr[i].ReleaseBuffer();
-    }
-#endif
 }
 
 // Sort function.

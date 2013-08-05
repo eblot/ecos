@@ -193,21 +193,6 @@ int main (int argc, char * argv []) {
             break; // end of qualifiers
         }
     }
-
-#if 0
-    printf("args_ok is %d\n", args_ok);
-    printf("help is %d\n", help);
-    printf("version is %d\n", version);
-    printf("no_resolve is %d\n", no_resolve);
-    printf("quiet is %d\n", quiet);
-    printf("verbose is %d\n", verbose);
-    printf("no-updates is %d\n", no_updates);
-    printf("ignore_errors is %d\n", ignore_errors);
-    printf("repository is %s\n", repository.c_str());
-    printf("savefile is %s\n", savefile.c_str());
-    printf("install_prefix is %s\n", install_prefix.c_str());
-    exit(EXIT_SUCCESS);
-#endif
     
     // Usually argv[command_index] will be a sub-command, unless
     // --help or --version has been used.

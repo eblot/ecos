@@ -538,15 +538,6 @@ bool CeCosSerial::Read (void *pBuf,unsigned int nSize,unsigned int &nRead)
       return false;
     }
     nRead = n;
-#if 0
-    if (n>0) {
-        unsigned int i;
-        fprintf(stderr, "%d:", nRead);
-        for (i = 0; i < nRead; i++)
-            fprintf(stderr, "%02x!", ((unsigned char *)pBuf)[i]);
-        fprintf(stderr, "\n");
-    }
-#endif
     return true;
   }
   
@@ -577,13 +568,6 @@ bool CeCosSerial::Read (void *pBuf,unsigned int nSize,unsigned int &nRead)
           return false;           // FAILED
         }
         else if (n > 0) {
-#if 0
-            unsigned int i;
-            fprintf(stderr, "%d:", nRead);
-            for (i = 0; i < nRead; i++)
-                fprintf(stderr, "%02x!", ((unsigned char *)pBuf)[i]);
-            fprintf(stderr, "\n");
-#endif
             nRead += n;
             pData += n;
             nSize -= n;

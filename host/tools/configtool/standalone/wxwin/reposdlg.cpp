@@ -76,21 +76,6 @@ ecRepositoryInfoDialog::ecRepositoryInfoDialog( wxWindow *parent, wxWindowID id,
 
 bool ecRepositoryInfoDialog::AddControls(wxWindow* parent)
 {
-#if 0
-    wxColour backgroundColour = * wxBLACK; // wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DFACE);
-    wxColour buttonBackgroundColour = * wxWHITE; // backgroundColour;
-    wxColour buttonForegroundColour = * wxBLACK; // wxSystemSettings::GetSystemColour(wxSYS_COLOUR_BTNTEXT);
-
-    if (!wxGetApp().GetHiColour())
-    {
-        backgroundColour = wxSystemSettings::GetSystemColour(wxSYS_COLOUR_3DFACE);
-        buttonBackgroundColour = backgroundColour;
-        buttonForegroundColour = wxSystemSettings::GetSystemColour(wxSYS_COLOUR_BTNTEXT);
-    }
-    
-    this->SetBackgroundColour(backgroundColour);
-#endif
-
     wxSize htmlSize(440, 380);
 
     // Note: in later versions of wxWin this will be fixed so wxRAISED_BORDER
@@ -124,14 +109,8 @@ bool ecRepositoryInfoDialog::AddControls(wxWindow* parent)
     item0->Add( item1, 0, wxALIGN_CENTRE|wxALL, 5 );
 
     wxButton *item2 = new wxButton( parent, wxID_CANCEL, "&OK", wxDefaultPosition, wxDefaultSize, 0 );
-#if 0
-    item2->SetBackgroundColour(buttonBackgroundColour);
-    item2->SetForegroundColour(buttonForegroundColour);
-#endif
     item2->SetDefault();
 
-    //item0->Add( item2, 0, wxALIGN_CENTER|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-    //item0->Add( item2, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
     item0->Add( item2, 0, wxALIGN_RIGHT|wxALL, 10 );
 
     parent->SetAutoLayout( TRUE );

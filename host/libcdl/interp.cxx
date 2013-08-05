@@ -189,11 +189,7 @@ CdlInterpreterBody::create_slave(CdlLoadable loadable_arg, bool safe)
     slave_name = "slave" + slave_name;
 
     // FIXME: creating a slave that is not safe appears to fail.
-#if 0    
-    Tcl_Interp* slave = Tcl_CreateSlave(interp, CDL_TCL_CONST_CAST(char*, slave_name.c_str()), safe);
-#else
     Tcl_Interp* slave = Tcl_CreateInterp();
-#endif
     if (0 == slave) {
         throw std::bad_alloc();
     }
@@ -207,15 +203,6 @@ CdlInterpreterBody::create_slave(CdlLoadable loadable_arg, bool safe)
         throw;
     }
     result->owns_interp = true;
-#if 0    
-    try {
-        slaves.push_back(result);
-    }
-    catch(std::bad_alloc) {
-        delete result;
-        throw;
-    }
-#endif
     
     result->parent      = this;
     result->set_toplevel(toplevel);

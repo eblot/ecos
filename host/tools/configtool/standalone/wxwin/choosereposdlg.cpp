@@ -118,41 +118,6 @@ void ecChooseRepositoryDialog::CreateControls(wxWindow* parent)
 
     item0->Add( item4, 0, wxALIGN_CENTRE|wxALL, 5 );
 
-#if 0
-    wxSizer *item0 = new wxBoxSizer( wxHORIZONTAL );
-
-    wxSizer *item1 = new wxBoxSizer( wxVERTICAL );
-
-    wxStaticText *item2 = new wxStaticText( parent, wxID_STATIC, "Please specify the root of the eCos repository tree.", wxDefaultPosition, wxDefaultSize, 0 );
-    item1->Add( item2, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    item1->Add( 20, 20, 1, wxALIGN_CENTRE|wxALL, 5 );
-
-    wxTextCtrl *item3 = new wxTextCtrl( parent, ecID_CHOOSE_REPOSITORY_TEXT, "", wxDefaultPosition, wxSize(320,-1), 0 );
-    item1->Add( item3, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
-
-    item0->Add( item1, 0, wxALIGN_CENTRE|wxALL, 5 );
-
-    wxSizer *item4 = new wxBoxSizer( wxVERTICAL );
-
-    wxButton *item5 = new wxButton( parent, wxID_OK, "&OK", wxDefaultPosition, wxDefaultSize, 0 );
-    item4->Add( item5, 0, wxALIGN_CENTRE|wxALL, 5 );
-    item5->SetDefault();
-
-    wxButton *item6 = new wxButton( parent, wxID_CANCEL, "&Cancel", wxDefaultPosition, wxDefaultSize, 0 );
-    item4->Add( item6, 0, wxALIGN_CENTRE|wxALL, 5 );
-
-    wxButton *item7 = new wxButton( parent, ecID_CHOOSE_REPOSITORY_BROWSE, "&Browse...", wxDefaultPosition, wxDefaultSize, 0 );
-    item4->Add( item7, 0, wxALIGN_CENTRE|wxALL, 5 );
-
-#ifdef __WXGTK__
-    wxButton *contextButton = new wxContextHelpButton( parent );
-    item4->Add( contextButton, 0, wxALIGN_CENTRE|wxALL, 5 );
-#endif
-
-    item0->Add( item4, 0, wxALIGN_CENTRE|wxALL, 5 );
-#endif
-
 #ifdef __WXGTK__
     wxButton *contextButton = new wxContextHelpButton( parent );
     item4->Add( contextButton, 0, wxALIGN_CENTRE|wxALL, 5 );

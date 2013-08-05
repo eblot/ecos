@@ -573,66 +573,6 @@ void ecViewerOptionsDialog::CreateControls( wxPanel *parent)
 
     item0->Add( item8, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
 
-#if 0
-    wxSizer *item0 = new wxBoxSizer( wxVERTICAL );
-
-    wxStaticBox *item2 = new wxStaticBox( parent, -1, _("View header files using") );
-    wxSizer *item1 = new wxStaticBoxSizer( item2, wxVERTICAL );
-
-    wxRadioButton *item3 = new wxRadioButton( parent, ecID_VIEWER_DIALOG_HEADER_ASSOCIATED, _("Associated viewer"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
-    item1->Add( item3, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
-
-    wxSizer *item4 = new wxBoxSizer( wxHORIZONTAL );
-
-    wxRadioButton *item5 = new wxRadioButton( parent, ecID_VIEWER_DIALOG_HEADER_THIS, _("This &viewer:"), wxDefaultPosition, wxDefaultSize, 0 );
-    item4->Add( item5, 0, wxALIGN_CENTRE|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
-
-    item4->Add( 20, 20, 1, wxALIGN_CENTRE|wxALL, 5 );
-
-    wxButton *item6 = new wxButton( parent, ecID_VIEWER_DIALOG_BROWSE_HEADER, _("&Browse..."), wxDefaultPosition, wxDefaultSize, 0 );
-    item4->Add( item6, 0, wxALIGN_CENTRE|wxALL, 5 );
-
-    item1->Add( item4, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 0 );
-
-    wxTextCtrl *item7 = new wxTextCtrl( parent, ecID_VIEWER_DIALOG_HEADER_TEXT, _(""), wxDefaultPosition, wxSize(80,-1), 0 );
-    item1->Add( item7, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    item0->Add( item1, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-//    item0->Add( 20, 20, 1, wxALIGN_CENTRE|wxALL, 5 );
-
-    wxStaticBox *item9 = new wxStaticBox( parent, -1, _("View documentation using") );
-    wxSizer *item8 = new wxStaticBoxSizer( item9, wxVERTICAL );
-
-    wxRadioButton *item10 = new wxRadioButton( parent, ecID_VIEWER_DIALOG_DOC_BUILTIN, _("&Built-in viewer"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
-    item8->Add( item10, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxTOP, 5 );
-
-    wxRadioButton *item11 = new wxRadioButton( parent, ecID_VIEWER_DIALOG_DOC_ASSOCIATED, _("Associated browser"), wxDefaultPosition, wxDefaultSize, 0 );
-    item8->Add( item11, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    wxSizer *item12 = new wxBoxSizer( wxHORIZONTAL );
-
-    wxRadioButton *item13 = new wxRadioButton( parent, ecID_VIEWER_DIALOG_DOC_THIS, _("This &browser:"), wxDefaultPosition, wxDefaultSize, 0 );
-    item12->Add( item13, 0, wxALIGN_CENTRE|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
-
-    item12->Add( 20, 20, 1, wxALIGN_CENTRE|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
-
-    wxButton *item14 = new wxButton( parent, ecID_VIEWER_DIALOG_BROWSE_DOC, _("Br&owse..."), wxDefaultPosition, wxDefaultSize, 0 );
-    item12->Add( item14, 0, wxALIGN_CENTRE|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
-
-    item8->Add( item12, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 0 );
-
-    wxTextCtrl *item15 = new wxTextCtrl( parent, ecID_VIEWER_DIALOG_DOC_TEXT, _(""), wxDefaultPosition, wxSize(80,-1), 0 );
-    item8->Add( item15, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    item0->Add( item8, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-#endif
-
-    // Disable this option because we don't yet have a built-in browser
-#if 0 // !ecUSE_EXPERIMENTAL_CODE
-    FindWindow(ecID_VIEWER_DIALOG_DOC_BUILTIN)->Enable(FALSE);
-#endif
-
     // Add validators
     FindWindow(ecID_VIEWER_DIALOG_HEADER_TEXT)->SetValidator(wxGenericValidator(& wxGetApp().GetSettings().m_strViewer));
     FindWindow(ecID_VIEWER_DIALOG_DOC_TEXT)->SetValidator(wxGenericValidator(& wxGetApp().GetSettings().m_strBrowser));
@@ -936,21 +876,6 @@ ecRunOptionsDialog::ecRunOptionsDialog(wxWindow* parent):
 
 bool ecRunOptionsDialog::TransferDataToWindow()
 {
-#if 0
-    // m_strTarget now set in ecConfigToolDoc::RunTests()
-    ecConfigToolDoc* doc = wxGetApp().GetConfigToolDoc();
-    wxString hardware;
-    if (doc)
-    {
-        hardware = doc->GetCdlConfig ()->get_hardware ().c_str();
-    }
-    else
-    {
-         hardware = _("Unknown");
-    }
-    wxGetApp().GetSettings().GetRunTestsSettings().m_strTarget = hardware;
-#endif
-
     // Serial/TCPIP
     m_serialOn = wxGetApp().GetSettings().GetRunTestsSettings().m_bSerial;
     m_TCPIPOn = !wxGetApp().GetSettings().GetRunTestsSettings().m_bSerial;

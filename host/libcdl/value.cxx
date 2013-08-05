@@ -904,11 +904,8 @@ CdlValue::set_flavor(CdlValueFlavor flavor_arg)
             // representation, and value as the data part of the
             // bool/data pair. This needs to be fixed, but it requires
             // significant API changes.
-#if 0            
-            CdlSimpleValue simple_val(cdl_int(1));
-#else
             CdlSimpleValue simple_val(cdl_int(0));
-#endif            
+
             values[CdlValueSource_Default]      = simple_val;
             values[CdlValueSource_Inferred]     = simple_val;
             values[CdlValueSource_Wizard]       = simple_val;
@@ -3524,16 +3521,6 @@ CdlValuableBody::check_properties(CdlInterpreter interp)
     if (has_property(CdlPropertyId_Calculated) && has_property(CdlPropertyId_DefaultValue)) {
         CdlParse::report_error(interp, "", "The properties \"default_value\" and \"calculated\" cannot be used together.");
     }
-
-#if 0
-    // Dialog is not mutually exclusive with entry_proc.
-    // Custom dialogs may not be supported, in which case it is likely that
-    // a text entry widget will be used and an entry_proc may well be
-    // applicable.
-    if (has_property(CdlPropertyId_Dialog) && has_property(CdlPropertyId_EntryProc)) {
-        CdlParse::report_error(interp, "", "The properties \"dialog\" and \"entry_proc\" cannot be used together.");
-    }
-#endif    
 
     // All of the expressions may be invalid because of unresolved references,
     // ditto for implements and for dialog. 

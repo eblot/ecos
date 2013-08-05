@@ -307,12 +307,6 @@ main(int argc, char** argv)
         CYG_TEST_FAIL("comparing two different smart pointers succeeds");
         ok = false;
     }
-#if 0
-    // Comparing base and derived smart pointers directly does not work yet.
-    if (class01_ptr1 == derived_ptr1) {
-        CYG_TEST_FAIL("comparing different base and derived pointers succeeds");
-    }
-#endif
     if (ok) {
         CYG_TEST_PASS("smart pointer comparisons work");
     }
@@ -378,35 +372,7 @@ main(int argc, char** argv)
         check_const_arg(derived_ptr1)) {
         CYG_TEST_PASS("Implicit cast to const smart pointer");
     }
-    
-#if 0
-    // All of this code should fail to compile.
-    // Applying delete to a smart pointer does not work. Use destroy() instead.
-    delete class01_ptr1;
-#endif
-#if 0
-    // Attempts to do incompatible assignments should fail.
-    class01_ptr1 = class02_ptr1;
-#endif
-#if 0    
-    // Comparing completely different types should fail.
-    if (class01_ptr1 == class02_ptr1) {
-        CYG_TEST_FAIL("it should not be possible to compare objects of different types");
-    }
-#endif
-#if 0
-    {
-        const class01 const_class01_ptr = class01_ptr1;
-        const_class01_ptr->modify();
-    }
-#endif
-#if 0
-    {
-        const class01 const_derived_ptr = derived_ptr1;
-        const_derived_ptr->modify();
-    }
-#endif
-    
+        
     // Check that destroy() actually gets rid of the underlying objects.
     class01_ptr1.destroy();
     class01_ptr2.destroy();

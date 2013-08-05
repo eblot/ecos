@@ -85,36 +85,6 @@ ecSolutionListCtrl::ecSolutionListCtrl(wxWindow* parent, wxWindowID id, const wx
 
     InsertColumn(0, _("Item"), wxLIST_FORMAT_LEFT, 200);
     InsertColumn(1, _("Value"), wxLIST_FORMAT_LEFT, 80);
-
-#if 0
-    int i = 0;
-    int j;
-
-    for (j = 0; j < 10; j++)
-    {
-        wxListItem info;
-        info.m_text = _("CYGPKG_HAL_EXCEPTIONS");
-        info.m_mask = wxLIST_MASK_TEXT | wxLIST_MASK_IMAGE ; // | wxLIST_MASK_DATA;
-        info.m_itemId = i;
-        info.m_image = 0;
-        //info.m_data = (long) doc;
-        
-        long item = InsertItem(info);
-        
-        SetItem(i, 1, _("Disabled"));   
-        i ++;
-        
-        info.m_text = _("CYGPKG_KERNEL_EXCEPTIONS");
-        info.m_mask = wxLIST_MASK_TEXT | wxLIST_MASK_IMAGE ; // | wxLIST_MASK_DATA;
-        info.m_itemId = i;
-        info.m_image = 1;
-        //info.m_data = (long) doc;
-        item = InsertItem(info);
-        
-        SetItem(item, 1, _("Disabled"));
-        i ++;
-    }
-#endif
 }
 
 void ecSolutionListCtrl::OnMouseEvent(wxMouseEvent& event)

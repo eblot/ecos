@@ -83,22 +83,6 @@ bool ecConfigToolView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 {
     wxGetApp().GetDocManager()->ActivateView(this, TRUE);
 
-    // Single-window mode
-#if 0
-    m_frame = GetMainFrame();
-
-    // Associate the appropriate frame with this view.
-    SetFrame(m_frame);
-    
-    // Make sure the document manager knows that this is the
-    // current view.
-    Activate(TRUE);
-    
-    // Initialize the edit menu Undo and Redo items
-    doc->GetCommandProcessor()->SetEditMenu(((pzMainFrame *)m_frame)->editMenu);
-    doc->GetCommandProcessor()->Initialize();    
-#endif
-
     return TRUE;
 }
 
@@ -297,16 +281,6 @@ bool ecConfigToolView::OnClose(bool deleteWindow)
 
     wxGetApp().GetDocManager()->ActivateView(this, FALSE);
 
-    // TODO: Set any pointers to this view to NULL
-
-#if 0
-    wxString s(wxTheApp->GetAppName());
-    if (m_frame)
-        m_frame->SetTitle(s);
-    
-    SetFrame((wxFrame *) NULL);
-#endif
-    
     Activate(FALSE);
     
     return TRUE;
@@ -366,24 +340,6 @@ void ecConfigToolView::Refresh(const wxString& macroName)
 
 void ecConfigToolView::Refresh (wxTreeItemId h)
 {
-    if(h)
-    {
-        // TODO Not sure if we need this
-#if 0
-        AdjustItemImage(h);
-        // Invalidate the labels of the affected items
-        CRect rect;		
-        GetItemRect(h, rect, TRUE );
-        rect.left+=m_TreeXOffsetAdjustment;
-        InvalidateRect(rect);
-        // Do the same for the cell view
-        CRect rcBuddyClient;
-        CConfigTool::GetCellView()->GetClientRect(rcBuddyClient);
-        rect.left=rcBuddyClient.left;
-        rect.right=rcBuddyClient.right;
-        CConfigTool::GetCellView()->InvalidateRect(rect);
-#endif
-    }
 }
 
 ecConfigItem *ecConfigToolView::DoFind(const wxString& what, wxWindow* parent)

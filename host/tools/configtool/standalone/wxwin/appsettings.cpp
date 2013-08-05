@@ -755,14 +755,6 @@ bool ecSettings::SaveConfig()
 
 void ecSettings::ShowSettingsDialog(const wxString& page)
 {
-#if 0
-    ecSettingsDialog* dialog = new ecSettingsDialog(wxGetApp().GetTopWindow());
-    if (!page.IsEmpty())
-        dialog->GetNotebook()->SetSelection(ecFindNotebookPage(dialog->GetNotebook(), page));
-    
-    int ret = dialog->ShowModal();
-    dialog->Destroy();
-#endif
 }
 
 #ifndef MAX_PATH

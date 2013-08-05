@@ -212,21 +212,6 @@ void ecSectionDialog::OnPageChange(wxNotebookEvent& event)
         return;
 
     wxWindow* page = m_notebook->GetPage(sel);
-    if (page)
-    {
-        wxString helpText;
-#if 0
-        if (page == m_displayOptions)
-            helpText = _("The display options dialog allows you to change display-related options.");
-        else if (page == m_viewerOptions)
-            helpText = _("The viewer options dialog allows you to configure viewers.");
-        else if (page == m_pathOptions)
-            helpText = _("The path options dialog allows you to change tool paths.");
-        else if (page == m_conflictResolutionOptions)
-            helpText = _("The conflict resolution options dialog allows you to change options related to conflict resolution.");
-        m_notebook->SetHelpText(helpText);
-#endif
-    }
 }
 
 bool ecSectionDialog::TransferDataToWindow()

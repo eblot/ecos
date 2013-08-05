@@ -1662,11 +1662,7 @@ CdlPackagesDatabaseBody::extract_template_details(std::string filename, std::str
     if ((TCL_ERROR == result) && ("OK" == tmp)) {
         result = TCL_OK;
     }
-#if 0    
-    if (TCL_OK != result) {
-        // No obvious way of recovering just yet
-    }
-#endif
+
     delete interp;
                            
     CYG_REPORT_RETURN();

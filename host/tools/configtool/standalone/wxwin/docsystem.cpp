@@ -724,21 +724,7 @@ bool ecHtmlIndexer::DoIndexDocs(const wxString& reposDir, wxString& projectFile,
 #endif
     }
     
-//    CreateHHCPackagesSection(wxT("Packages"), wxEmptyString, stream, docDir);
-    
     CreateHHCWriteFooter(stream);
-
-#if 0 // def __WXGTK__
-    // Hack to restore correct colour to short description window
-    ecShortDescriptionWindow* sdw = wxGetApp().GetMainFrame()->GetShortDescriptionWindow();
-
-    wxColour oldColour = sdw->GetBackgroundColour();
-    if (oldColour.Ok())
-    {
-        sdw->SetBackgroundColour(*wxBLACK);
-        sdw->SetBackgroundColour(oldColour);
-    }
-#endif
 
     return TRUE;
 }

@@ -198,86 +198,7 @@ void ecPackagesDialog::CreateControls(wxWindow* parent)
     item18->Add( item22, 0, wxALIGN_CENTRE|wxALL, 5 );
     
     item0->Add( item18, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
-    
-#if 0
-    wxSizer *item0 = new wxBoxSizer( wxVERTICAL );
-    
-    wxSizer *item1 = new wxBoxSizer( wxHORIZONTAL );
-    
-    wxSizer *item2 = new wxBoxSizer( wxVERTICAL );
-    
-    wxStaticText *item3 = new wxStaticText( parent, wxID_STATIC, _("Available &packages:"), wxDefaultPosition, wxDefaultSize, 0 );
-    item2->Add( item3, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-    
-    wxString *strs4 = (wxString*) NULL;
-    wxListBox *item4 = new wxListBox( parent, ecID_PACKAGES_DIALOG_AVAILABLE_LIST, wxDefaultPosition, wxSize(230,190), 0, strs4, wxLB_SORT|wxLB_HSCROLL );
-    item2->Add( item4, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
-    
-    item1->Add( item2, 1, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxALL, 0 );
-    
-    wxSizer *item5 = new wxBoxSizer( wxVERTICAL );
-    
-    wxButton *item6 = new wxButton( parent, ecID_PACKAGES_DIALOG_ADD, _("&Add >>"), wxDefaultPosition, wxDefaultSize, 0 );
-    item5->Add( item6, 0, wxALIGN_CENTRE|wxALL, 5 );
-    
-    wxButton *item7 = new wxButton( parent, ecID_PACKAGES_DIALOG_REMOVE, _("<< &Remove"), wxDefaultPosition, wxDefaultSize, 0 );
-    item5->Add( item7, 0, wxALIGN_CENTRE|wxALL, 5 );
-
-    item1->Add( item5, 0, wxALIGN_CENTRE|wxALL, 0 );
-    
-    wxSizer *item8 = new wxBoxSizer( wxVERTICAL );
-    
-    wxStaticText *item9 = new wxStaticText( parent, wxID_STATIC, _("&Use these packages:"), wxDefaultPosition, wxDefaultSize, 0 );
-    item8->Add( item9, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-    
-    wxString *strs10 = (wxString*) NULL;
-    wxListBox *item10 = new wxListBox( parent, ecID_PACKAGES_DIALOG_USE_LIST, wxDefaultPosition, wxSize(230,190), 0, strs10, wxLB_SORT|wxLB_HSCROLL );
-    item8->Add( item10, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
-    
-    item1->Add( item8, 1, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxALL, 0 );
-    
-    item0->Add( item1, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-    
-    wxStaticText *item11 = new wxStaticText( parent, wxID_STATIC, _("&Version:"), wxDefaultPosition, wxDefaultSize, 0 );
-    item0->Add( item11, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 10 );
-    
-    wxString *strs12 = (wxString*) NULL;
-    wxChoice *item12 = new wxChoice( parent, ecID_PACKAGES_DIALOG_VERSION, wxDefaultPosition, wxSize(100,-1), 0, strs12, 0 );
-    item0->Add( item12, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 10 );
-    
-    wxTextCtrl *item13 = new wxTextCtrl( parent, ecID_PACKAGES_DIALOG_DESCRIPTION, _(""), wxDefaultPosition, wxSize(80,110), wxTE_MULTILINE );
-    item0->Add( item13, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 10 );
-    
-    wxStaticText *item14 = new wxStaticText( parent, wxID_STATIC, _("&Keywords:"), wxDefaultPosition, wxDefaultSize, 0 );
-    item0->Add( item14, 0, wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 10 );
-    
-    wxSizer *item15 = new wxBoxSizer( wxHORIZONTAL );
-    
-    wxTextCtrl *item16 = new wxTextCtrl( parent, ecID_PACKAGES_DIALOG_KEYWORDS, _(""), wxDefaultPosition, wxSize(80,-1), 0 );
-    item15->Add( item16, 1, wxALIGN_CENTRE|wxALL, 5 );
-    
-    wxButton *item17 = new wxButton( parent, ecID_PACKAGES_DIALOG_CLEAR, _("C&lear"), wxDefaultPosition, wxDefaultSize, 0 );
-    item15->Add( item17, 0, wxALIGN_CENTRE|wxALL, 5 );
-    
-    item0->Add( item15, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT, 5 );
-    
-    wxSizer *item18 = new wxBoxSizer( wxHORIZONTAL );
-    
-    wxCheckBox *item19 = new wxCheckBox( parent, ecID_PACKAGES_DIALOG_OMIT_HARDWARE, _("Omit hardware packages"), wxDefaultPosition, wxDefaultSize, 0 );
-    item18->Add( item19, 0, wxALIGN_CENTRE|wxALL, 5 );
-    
-    item18->Add( 20, 20, 1, wxALIGN_CENTRE|wxALL, 5 );
-    
-    wxButton *item20 = new wxButton( parent, wxID_OK, _("&OK"), wxDefaultPosition, wxDefaultSize, 0 );
-    item20->SetDefault();
-    item18->Add( item20, 0, wxALIGN_CENTRE|wxALL, 5 );
-
-    wxButton *item21 = new wxButton( parent, wxID_CANCEL, _("&Cancel"), wxDefaultPosition, wxDefaultSize, 0 );
-    item18->Add( item21, 0, wxALIGN_CENTRE|wxALL, 5 );
-    
-    item0->Add( item18, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxBOTTOM, 5 );
-#endif
-    
+        
 #ifdef __WXGTK__
     wxButton *contextButton = new wxContextHelpButton( parent );
     item18->Add( contextButton, 0, wxALIGN_CENTRE|wxALL, 5 );
@@ -605,16 +526,7 @@ void ecPackagesDialog::OnClickListBox1(wxCommandEvent& event)
 {
     wxListBox* availableList = (wxListBox*) FindWindow( ecID_PACKAGES_DIALOG_AVAILABLE_LIST );
     wxListBox* useList = (wxListBox*) FindWindow( ecID_PACKAGES_DIALOG_USE_LIST );
-    
-#if 0    
-    int sel = event.GetSelection();
-    if (sel > -1)
-    {
-        // TODO: check that this works for multiple-selection listboxes
-        DisplayDescription(availableList->GetString(sel));
-    }
-#endif
-    
+        
     ClearSelections(*useList);
     UpdatePackageDescription ();
     UpdateVersionList ();
@@ -626,15 +538,6 @@ void ecPackagesDialog::OnClickListBox2(wxCommandEvent& event)
 {
     wxListBox* availableList = (wxListBox*) FindWindow( ecID_PACKAGES_DIALOG_AVAILABLE_LIST );
     wxListBox* useList = (wxListBox*) FindWindow( ecID_PACKAGES_DIALOG_USE_LIST );
-    
-#if 0    
-    int sel = event.GetSelection();
-    if (sel > -1)
-    {
-        // TODO: check that this works for multiple-selection listboxes
-        DisplayDescription(useList->GetString(sel));
-    }
-#endif
     
     ClearSelections(*availableList);
     UpdatePackageDescription ();

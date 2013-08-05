@@ -619,15 +619,7 @@ CdlPackageBody::get_config_header() const
     CYG_PRECONDITION_CLASSC(this);
 
     std::string result = "";
-#if 0    
-    if (has_property(CdlPropertyId_Hardware)) {
-        result = "hardware.h";
-    } else {
-        result = CdlDefineLoadableBody::get_config_header();
-    }
-#else
     result = CdlDefineLoadableBody::get_config_header();
-#endif  
 
     CYG_REPORT_RETURN();
     return result;

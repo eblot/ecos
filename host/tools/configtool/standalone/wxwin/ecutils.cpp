@@ -72,13 +72,6 @@
 #include <sys/cygwin.h> /* for cygwin_conv_to_*_path() */
 #endif
 
-#if 0
-
-#define INCLUDEFILE <string>
-#include "IncludeSTL.h"
-
-#endif
-
 // Chop str into pieces, using cSep as separator.
 // " and \ have usual semantics
 // Return value is array of pieces found.
@@ -142,51 +135,6 @@ int ecUtils::Chop(const wxString& str, wxArrayString &ar, const wxString& sep,
     return ar.GetCount();
 }
 
-#if 0
-
-// vararg-style message box formatter
-int ecUtils::MessageBoxF (LPCTSTR pszFormat, ...)
-{
-  int rc;
-  va_list args;
-  va_start(args, pszFormat);
-  rc=ecUtils::vMessageBox(MB_OK, pszFormat,args);
-  va_end(args);
-  return rc;
-}
-
-// As above, but with type as first parameter.
-int ecUtils::MessageBoxFT (UINT nType, LPCTSTR pszFormat, ...)
-{
-  int rc;
-  va_list args;
-  va_start(args, pszFormat);
-  rc=ecUtils::vMessageBox(nType, pszFormat,args);
-  va_end(args);
-  return rc;
-}
-
-int ecUtils::vMessageBox(UINT nType, LPCTSTR  pszFormat, va_list marker)
-{
-  int rc=0;
-  for(int nLength=100;nLength;) {
-    TCHAR *buf=new TCHAR[1+nLength];
-    int n=_vsntprintf(buf, nLength, pszFormat, marker ); 
-    if(-1==n){
-      nLength*=2;  // NT behavior
-    } else if (n<nLength){
-      rc=AfxMessageBox(buf,nType);
-      nLength=0;   // trigger exit from loop
-    } else {
-      nLength=n+1; // UNIX behavior generally, or NT behavior when buffer size exactly matches required length
-    }
-    delete [] buf;
-  }
-  return rc;
-}
-
-#endif
-
 bool ecUtils::StrToItemIntegerType(const wxString & str, long &d)
 {
 	wxChar* pEnd;
@@ -221,42 +169,6 @@ bool ecUtils::StrToDouble (const wxString & strValue, double &dValue)
 	dValue = wxStrtod(strValue, &pEnd);
 	return (0 == errno) && (*pEnd == wxT('\0'));
 }
-
-#if 0
-const wxString ecUtils::Explanation(CFileException & exc)
-{
-	wxString strMsg;
-	switch(exc.m_cause){
-		case CFileException::none: strMsg=wxT("No error occurred.");break;
-		case CFileException::generic: strMsg=wxT("   An unspecified error occurred.");break;
-		case CFileException::fileNotFound: strMsg=wxT("   The file could not be located.");break;
-		case CFileException::badPath: strMsg=wxT("   All or part of the path is invalid.");break;
-		case CFileException::tooManyOpenFiles: strMsg=wxT("   The permitted number of open files was exceeded.");break;
-		case CFileException::accessDenied: strMsg=wxT("   The file could not be accessed.");break;
-		case CFileException::invalidFile: strMsg=wxT("   There was an attempt to use an invalid file handle.");break;
-		case CFileException::removeCurrentDir: strMsg=wxT("   The current working directory cannot be removed.");break;
-		case CFileException::directoryFull: strMsg=wxT("   There are no more directory entries.");break;
-		case CFileException::badSeek: strMsg=wxT("   There was an error trying to set the file pointer.");break;
-		case CFileException::hardIO: strMsg=wxT("   There was a hardware error.");break;
-		case CFileException::sharingViolation: strMsg=wxT("   SHARE.EXE was not loaded, or a shared region was locked.");break;
-		case CFileException::lockViolation: strMsg=wxT("   There was an attempt to lock a region that was already locked.");break;
-		case CFileException::diskFull: strMsg=wxT("   The disk is full.");break;
-		case CFileException::endOfFile: strMsg=wxT("   The end of file was reached. ");break;
-		default:
-			strMsg=wxT(" Unknown cause");
-			break;
-	}
-	return strMsg;
-}
-
-
-const wxString ecUtils::LoadString(UINT id)
-{
-	wxString str;
-	str.LoadString(id);
-	return str;
-}
-#endif
 
 const wxString ecUtils::NativeToPosixPath(const wxString & native)
 {
@@ -314,128 +226,6 @@ bool ecUtils::AddToPath(const ecFileName & strFolder, bool bAtFront)
     return (TRUE == wxSetEnv(wxT("PATH"),strPath));
 }
 
-#if 0		
-wxString ecUtils::GetLastErrorMessageString()
-{
-	wxString str;
-	PTCHAR pszMsg;
-	FormatMessage( 
-		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-		NULL,
-		GetLastError(),
-		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-		(LPTSTR)&pszMsg,
-		0,
-		NULL 
-	);
-
-	// Display the string.
-	str=pszMsg;
-  str.TrimRight();
-	// Free the buffer.
-	LocalFree(pszMsg);
-	return str;
-
-}
-
-bool ecUtils::Launch(const ecFileName &strFileName, const ecFileName &strViewer)
-{
-	bool rc=false;
-
-	if(!strViewer.IsEmpty())//use custom editor
-	{
-		wxString strCmdline(strViewer);
-		
-		PTCHAR pszCmdLine=strCmdline.GetBuffer(strCmdline.GetLength());
-		GetShortPathName(pszCmdLine,pszCmdLine,strCmdline.GetLength());
-		strCmdline.ReleaseBuffer();
-
-		strCmdline+=_TCHAR(' ');
-		strCmdline+=strFileName;
-		PROCESS_INFORMATION pi;
-		STARTUPINFO si;
-
-		si.cb = sizeof(STARTUPINFO); 
-		si.lpReserved = NULL; 
-		si.lpReserved2 = NULL; 
-		si.cbReserved2 = 0; 
-		si.lpDesktop = NULL; 
-		si.dwFlags = 0; 
-		si.lpTitle=NULL;
-
-		if(CreateProcess(
-			NULL, // app name
-			//strCmdline.GetBuffer(strCmdline.GetLength()),    // command line
-			strCmdline.GetBuffer(strCmdline.GetLength()),    // command line
-			NULL, // process security
-			NULL, // thread security
-			TRUE, // inherit handles
-			0,
-			NULL, // environment
-			NULL, // current dir
-			&si, // startup info
-			&pi)){
-            CloseHandle(pi.hProcess);
-            CloseHandle(pi.hThread);
-			rc=true;
-		} else {
-			MessageBoxF(wxT("Failed to invoke %s.\n"),strCmdline);
-		}
-		strCmdline.ReleaseBuffer();
-	} else {// Use association
-		TCHAR szExe[MAX_PATH];
-		HINSTANCE h=FindExecutable(strFileName,wxT("."),szExe);
-		if(int(h)<=32){
-			wxString str;
-			switch(int(h)){
-				case 0:  str=wxT("The system is out of memory or resources.");break;
-				case 31: str=wxT("There is no association for the specified file type.");break;
-				case ERROR_FILE_NOT_FOUND: str=wxT("The specified file was not found.");break;
-				case ERROR_PATH_NOT_FOUND: str=wxT("The specified path was not found.");break;
-				case ERROR_BAD_FORMAT:     str=wxT("The .EXE file is invalid (non-Win32 .EXE or error in .EXE image).");break;
-				default: break;
-			}
-			MessageBoxF(wxT("Failed to open document %s.\r\n%s"),strFileName,str);
-		} else {
-
-			SHELLEXECUTEINFO sei = {sizeof(sei), 0, AfxGetMainWnd()->GetSafeHwnd(), wxT("open"),
-					strFileName, NULL, NULL, SW_SHOWNORMAL, AfxGetInstanceHandle( )};
-
-			sei.hInstApp=0;
-			HINSTANCE hInst=ShellExecute(AfxGetMainWnd()->GetSafeHwnd(),wxT("open"), strFileName, NULL, wxT("."), 0)/*ShellExecuteEx(&sei)*/;
-			if(int(hInst)<=32/*sei.hInstApp==0*/)
-			{
-				wxString str;
-				switch(int(hInst))
-				{
-					case 0 : str=wxT("The operating system is out of memory or resources. ");break;
-					case ERROR_FILE_NOT_FOUND : str=wxT("The specified file was not found. ");break;
-					case ERROR_PATH_NOT_FOUND : str=wxT("The specified path was not found. ");break;
-					case ERROR_BAD_FORMAT : str=wxT("The .EXE file is invalid (non-Win32 .EXE or error in .EXE image). ");break;
-					case SE_ERR_ACCESSDENIED : str=wxT("The operating system denied access to the specified file. ");break;
-					case SE_ERR_ASSOCINCOMPLETE : str=wxT("The filename association is incomplete or invalid. ");break;
-					case SE_ERR_DDEBUSY : str=wxT("The DDE transaction could not be completed because other DDE transactions were being processed. ");break;
-					case SE_ERR_DDEFAIL : str=wxT("The DDE transaction failed. ");break;
-					case SE_ERR_DDETIMEOUT : str=wxT("The DDE transaction could not be completed because the request timed out. ");break;
-					case SE_ERR_DLLNOTFOUND : str=wxT("The specified dynamic-link library was not found. ");break;
-					//case SE_ERR_FNF : str=wxT("The specified file was not found. ");break;
-					case SE_ERR_NOASSOC : str=wxT("There is no application associated with the given filename extension. ");break;
-					case SE_ERR_OOM : str=wxT("There was not enough memory to complete the operation. ");break;
-					//case SE_ERR_PNF : str=wxT("The specified path was not found. ");break;
-					case SE_ERR_SHARE : str=wxT("A sharing violation occurred. ");break;
-					default: str=wxT("An unexpected error occurred");break;
-				}
-				MessageBoxF(wxT("Failed to open document %s using %s.\r\n%s"),strFileName,szExe,str);
-			} else {
-				rc=true;
-			}
-		}
-	}
-	return rc;
-}
-
-#endif
-
 void ecUtils::UnicodeToCStr(const wxChar* str,char *&psz)
 {
     int nLength=1 + wxStrlen(str);
@@ -486,86 +276,7 @@ wxString ecUtils::StripExtraWhitespace (const wxString & strInput)
     strOutput.Trim(TRUE);
     strOutput.Trim(FALSE);
     return strOutput;
-#if 0    
-    wxString strOutput;
-    LPTSTR o=strOutput.GetBuffer(1+strInput.GetLength());
-    for(LPCTSTR c=strInput;*c;c++){
-        if(_istspace(*c)){
-            *o++=_TCHAR(' ');
-            if (_istspace(c[1])){
-                for(c=c+2;_istspace(*c);c++);
-                c--;
-            }
-        } else {
-            *o++=*c;
-        }
-    }
-    *o=0;
-    strOutput.ReleaseBuffer();
-    strOutput.TrimLeft();
-    strOutput.TrimRight();
-    return strOutput;
-#endif
 }
-
-#if 0
-ecFileName ecUtils::WPath(const std::string &str)
-{
-  // Convert a path as read from cdl into host format
-  // Change / to \ throughout
-  ecFileName
-    strPath(str.c_str());
-  strPath.Replace (_TCHAR('/'), _TCHAR('\\'));
-  return strPath;
-}
-
-// Copy file helper function.
-// This makes sure the destination file is only touched as necessary.
-// It is written using Posix calls lest it should be more broadly applicable.
-
-bool ecUtils::CopyFile(LPCTSTR pszSource,LPCTSTR pszDest)
-{
-  // Compare the files.  First set rc to the result of the comparison (true if the same)
-  bool rc=false;
-
-  struct _stat s1,s2;
-  if(-1!=_tstat(pszSource,&s1) && -1!=_tstat(pszDest,&s2) && s1.st_size==s2.st_size){
-    // Files both exist and are of equal size
-    FILE *f1=_tfopen(pszSource,wxT("rb"));
-    if(f1){
-      FILE *f2=_tfopen(pszDest,wxT("rb"));
-      if(f2){
-        int nSize1,nSize2;
-        rc=true;
-        do{
-          char buf1[4096],buf2[4096];
-          nSize1=fread(buf1,1,sizeof buf1,f1);
-          nSize2=fread(buf2,1,sizeof buf2,f2);
-          if(nSize1!=nSize2 || 0!=memcmp(buf1,buf2,nSize1)){
-            rc=false;
-            break;
-          }
-        } while (nSize1>0);
-        fclose(f2);
-      }
-      fclose(f1);
-    }
-  }
-
-  if(rc){
-    // Files are identical
-  } else {
-    rc=TRUE==::CopyFile(pszSource,pszDest,FALSE);
-    if(rc){
-    } else {
-      MessageBoxF(wxT("Failed to copy '%s' to '%s' - %s"),pszSource,pszDest,GetLastErrorMessageString());
-    }
-  }
-
-  return rc;
-}
-
-#endif
 
 /*
  * wxStringToStringMap

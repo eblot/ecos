@@ -68,32 +68,10 @@
 
 class ecUtils {
 public:
-#if 0
-    static bool Launch (const ecFileName &strFileName,const ecFileName &strViewer);
-    static wxString GetLastErrorMessageString ();
-#endif    
-
     static const wxString PosixToNativePath(const wxString & posix);
     static const wxString NativeToPosixPath(const wxString & native);
     static bool AddToPath (const ecFileName &strFolder, bool bAtFront=true);
 
-#if 0
-    static const wxString LoadString (UINT id);
-    
-    // Messagebox functions
-    
-    // Vararg message box compositor
-    static int MessageBoxF (LPCTSTR pszFormat, ...);
-    // Same, with type
-    static int MessageBoxFT (UINT nType, LPCTSTR pszFormat, ...);
-    // As above but with resource
-    static int MessageBoxFR (UINT nID, UINT nType, LPCTSTR pszFormat, ...);
-    // Same, with type
-    static int MessageBoxFR (UINT nID, LPCTSTR pszFormat, ...);
-    // vararg form
-    static int vMessageBox(UINT nType, LPCTSTR  pszFormat, va_list marker);
-    
-#endif
     // String functions
     
     // Chop the string into pieces using separator cSep.
@@ -116,13 +94,6 @@ public:
 
     static void UnicodeToCStr(const wxChar* str,char *&psz);
     static std::string UnicodeToStdStr(const wxChar* str);
-
-#if 0    
-    // Provide a failure explanation for what just went wrong
-    static const wxString Explanation (CFileException &exc);
-    static ecFileName WPath(const std::string &str);
-    static bool CopyFile (LPCTSTR pszSource,LPCTSTR pszDest);
-#endif
 };
 
 /*

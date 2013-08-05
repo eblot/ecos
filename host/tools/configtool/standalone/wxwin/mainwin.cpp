@@ -267,11 +267,6 @@ ecMainFrame::ecMainFrame(wxDocManager *manager, const wxString& title, const wxP
     wxMenu *fileMenu = new wxMenu(wxT(""), wxMENU_TEAROFF);
     
     fileMenu->Append(wxID_NEW, _("&New\tCtrl+N"), _("Creates a new document"));
-#if 0
-    wxMenuItem* menuItem = new wxMenuItem(fileMenu, wxID_NEW, _("&New\tCtrl+N"), _("Creates a new document"));
-    menuItem->SetBitmaps(wxBITMAP(new));
-    fileMenu->Append(menuItem);
-#endif
     
     fileMenu->Append(wxID_OPEN, _("&Open\tCtrl+O"), _("Opens an existing document"));
     fileMenu->Append(wxID_SAVE, _("&Save\tCtrl+S"), _("Saves the active document"));
@@ -354,10 +349,6 @@ ecMainFrame::ecMainFrame(wxDocManager *manager, const wxString& title, const wxP
     toolsMenu->Append(ecID_PLATFORMS, _("Plat&forms..."), _("Edits the platforms list"));
     toolsMenu->Append(ecID_RESOLVE_CONFLICTS, _("Resolve &Conflicts..."), _("Resolves conflicts"));
     toolsMenu->Append(ecID_ADMINISTRATION, _("&Administration..."), _("Performs repository administration tasks"));
-#if 0
-    toolsMenu->AppendSeparator();
-    toolsMenu->Append(ecID_TOOLS_OPTIONS, _("&Options..."), _("Changes configuration options"));
-#endif
     toolsMenu->Append(ecID_INDEX_DOCS, _("Regenerate Help &Index"), _("Regenerates the online help contents"));
     
     // Help menu
@@ -1294,15 +1285,6 @@ void ecMainFrame::OnChooseRepository(wxCommandEvent& event)
 
     if (wxGetApp().GetConfigToolDoc()->OpenRepository(wxEmptyString, TRUE))
     {
-        // TODO
-#if 0
-        // reset the document title as shown in the frame window
-        GetDocTemplate ()->SetDefaultTitle (this);
-        
-        // load the memory layout for the default target-platform-startup from the new repository
-        NewMemoryLayout (CFileName (m_strPackagesDir, m_strMemoryLayoutFolder, _T("include\\pkgconf")));
-#endif
-
         doc->UpdateAllViews(NULL);
         doc->UpdateFailingRuleCount();
     }

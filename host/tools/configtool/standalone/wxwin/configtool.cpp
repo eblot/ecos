@@ -284,7 +284,7 @@ bool ecApp::OnInit()
         wxLog::SetActiveTarget(new wxLogStderr);
 #endif
         wxString msg;
-        msg.Printf(wxT("eCos Configuration Tool (c) Free Software Foundation, Inc., 1998-2013 Version %s, %s"), ecCONFIGURATION_TOOL_VERSION, __DATE__);
+        msg.Printf(wxT("eCos Configuration Tool (c) Free Software Foundation, Inc., 1998-2012 Version %s, %s"), ecCONFIGURATION_TOOL_VERSION, __DATE__);
         wxLogMessage(msg);
         return FALSE;
     }
@@ -770,18 +770,6 @@ bool ecApp::InitializeHelpController()
         ecConfigToolDoc* doc = GetConfigToolDoc();
 
         // No longer using relative paths
-#if 0
-        if (doc)
-        {
-            wxString htmlDir = wxString(doc->GetRepository()) + wxString(wxT("/doc/html"));
-            if (!wxDirExists(htmlDir))
-                htmlDir = wxString(doc->GetRepository()) + wxString(wxT("/doc"));
-
-            htmlDir += wxString(wxT("/"));
-
-            wxGetApp().GetHelpController().SetBookBasePath(htmlDir);
-        }
-#endif
         return TRUE;
     }
 }
@@ -993,101 +981,6 @@ bool ecApp::Launch(const wxString & strFileName,const wxString &strViewer)
     ok = (wxExecute(cmd, FALSE) != 0);
     
     return ok;
-
-#if 0    
-    bool rc=false;
-    
-    if(!strViewer.IsEmpty())//use custom editor
-    {
-        CString strCmdline(strViewer);
-        
-        TCHAR *pszCmdLine=strCmdline.GetBuffer(strCmdline.GetLength());
-        GetShortPathName(pszCmdLine,pszCmdLine,strCmdline.GetLength());
-        strCmdline.ReleaseBuffer();
-        
-        strCmdline+=_TCHAR(' ');
-        strCmdline+=strFileName;
-        PROCESS_INFORMATION pi;
-        STARTUPINFO si;
-        
-        si.cb = sizeof(STARTUPINFO); 
-        si.lpReserved = NULL; 
-        si.lpReserved2 = NULL; 
-        si.cbReserved2 = 0; 
-        si.lpDesktop = NULL; 
-        si.dwFlags = 0; 
-        si.lpTitle=NULL;
-        
-        if(CreateProcess(
-            NULL, // app name
-            //strCmdline.GetBuffer(strCmdline.GetLength()),    // command line
-            strCmdline.GetBuffer(strCmdline.GetLength()),    // command line
-            NULL, // process security
-            NULL, // thread security
-            TRUE, // inherit handles
-            0,
-            NULL, // environment
-            NULL, // current dir
-            &si, // startup info
-            &pi)){
-            CloseHandle(pi.hProcess);
-            CloseHandle(pi.hThread);
-            rc=true;
-        } else {
-            CUtils::MessageBoxF(_T("Failed to invoke %s.\n"),strCmdline);
-        }
-        strCmdline.ReleaseBuffer();
-    } else {// Use association
-        TCHAR szExe[MAX_PATH];
-        HINSTANCE h=FindExecutable(strFileName,_T("."),szExe);
-        if(int(h)<=32){
-            CString str;
-            switch(int(h)){
-            case 0:  str=_T("The system is out of memory or resources.");break;
-            case 31: str=_T("There is no association for the specified file type.");break;
-            case ERROR_FILE_NOT_FOUND: str=_T("The specified file was not found.");break;
-            case ERROR_PATH_NOT_FOUND: str=_T("The specified path was not found.");break;
-            case ERROR_BAD_FORMAT:     str=_T("The .EXE file is invalid (non-Win32 .EXE or error in .EXE image).");break;
-            default: break;
-            }
-            CUtils::MessageBoxF(_T("Failed to open document %s.\r\n%s"),strFileName,str);
-        } else {
-            
-            SHELLEXECUTEINFO sei = {sizeof(sei), 0, AfxGetMainWnd()->GetSafeHwnd(), _T("open"),
-                strFileName, NULL, NULL, SW_SHOWNORMAL, AfxGetInstanceHandle( )};
-            
-            sei.hInstApp=0;
-            HINSTANCE hInst=ShellExecute(AfxGetMainWnd()->GetSafeHwnd(),_T("open"), strFileName, NULL, _T("."), 0)/*ShellExecuteEx(&sei)*/;
-            if(int(hInst)<=32/*sei.hInstApp==0*/)
-            {
-                CString str;
-                switch(int(hInst))
-                {
-                case 0 : str=_T("The operating system is out of memory or resources. ");break;
-                case ERROR_FILE_NOT_FOUND : str=_T("The specified file was not found. ");break;
-                case ERROR_PATH_NOT_FOUND : str=_T("The specified path was not found. ");break;
-                case ERROR_BAD_FORMAT : str=_T("The .EXE file is invalid (non-Win32 .EXE or error in .EXE image). ");break;
-                case SE_ERR_ACCESSDENIED : str=_T("The operating system denied access to the specified file. ");break;
-                case SE_ERR_ASSOCINCOMPLETE : str=_T("The filename association is incomplete or invalid. ");break;
-                case SE_ERR_DDEBUSY : str=_T("The DDE transaction could not be completed because other DDE transactions were being processed. ");break;
-                case SE_ERR_DDEFAIL : str=_T("The DDE transaction failed. ");break;
-                case SE_ERR_DDETIMEOUT : str=_T("The DDE transaction could not be completed because the request timed out. ");break;
-                case SE_ERR_DLLNOTFOUND : str=_T("The specified dynamic-link library was not found. ");break;
-                    //case SE_ERR_FNF : str=_T("The specified file was not found. ");break;
-                case SE_ERR_NOASSOC : str=_T("There is no application associated with the given filename extension. ");break;
-                case SE_ERR_OOM : str=_T("There was not enough memory to complete the operation. ");break;
-                    //case SE_ERR_PNF : str=_T("The specified path was not found. ");break;
-                case SE_ERR_SHARE : str=_T("A sharing violation occurred. ");break;
-                default: str=_T("An unexpected error occurred");break;
-                }
-                CUtils::MessageBoxF(_T("Failed to open document %s using %s.\r\n%s"),strFileName,szExe,str);
-            } else {
-                rc=true;
-            }
-        }
-    }
-    return rc;
-#endif
 }
 
 bool ecApp::PrepareEnvironment(bool bWithBuildTools, wxString* cmdLine)
@@ -1371,60 +1264,7 @@ void ecApp::Build(const wxString &strWhat /*=wxT("")*/ )
                 m_pipedProcess  = NULL;
             }
         }
-
-#if 0        
-        if(PrepareEnvironment())
-        {
-            m_strBuildTarget=strWhat;
-            SetThermometerMax(250); // This is just a guess.  The thread we are about to spawn will work out the correct answer
-            m_nLogicalLines=0;
-            UpdateThermometer(0);
-            CloseHandle(CreateThread(NULL, 0, ThreadFunc, this, 0 ,&m_dwThreadId));
-            CString strMsg;
-            strMsg.Format(_T("Building %s"),strWhat);
-            SetIdleMessage(strMsg);
-            
-            SetTimer(42,1000,0); // This timer checks for process completion
-            SetCurrentDirectory(pDoc->BuildTree());
-            m_sp.Run(SubprocessOutputFunc, this, strCmd, false);
-            SetIdleMessage();
-        }
-#endif
     }
-#if 0
-    
-    if(pDoc->IsModified()||pDoc->BuildTree().IsEmpty()){
-        SendMessage (WM_COMMAND, ID_FILE_SAVE);
-    }
-    
-    if(!(pDoc->IsModified()||pDoc->BuildTree().IsEmpty())){ // verify the save worked
-        CString strCmd (_T("make"));
-        if(!strWhat.IsEmpty()){
-            strCmd+=_TCHAR(' ');
-            strCmd+=strWhat;
-        }
-        if(!GetApp()->m_strMakeOptions.IsEmpty()){
-            strCmd+=_TCHAR(' ');
-            strCmd+=GetApp()->m_strMakeOptions;
-        }
-        
-        if(PrepareEnvironment()){
-            m_strBuildTarget=strWhat;
-            SetThermometerMax(250); // This is just a guess.  The thread we are about to spawn will work out the correct answer
-            m_nLogicalLines=0;
-            UpdateThermometer(0);
-            CloseHandle(CreateThread(NULL, 0, ThreadFunc, this, 0 ,&m_dwThreadId));
-            CString strMsg;
-            strMsg.Format(_T("Building %s"),strWhat);
-            SetIdleMessage(strMsg);
-            
-            SetTimer(42,1000,0); // This timer checks for process completion
-            SetCurrentDirectory(pDoc->BuildTree());
-            m_sp.Run(SubprocessOutputFunc, this, strCmd, false);
-            SetIdleMessage();
-        }
-    }
-#endif
 }
 
 void ecApp::OnProcessTerminated(wxProcess* process)

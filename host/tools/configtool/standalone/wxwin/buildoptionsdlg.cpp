@@ -99,19 +99,6 @@ ecBuildOptionsDialog::ecBuildOptionsDialog(wxWindow* parent):
     m_imageList.Add(wxICON(package_version));
     m_treeCtrl->SetImageList(& m_imageList);
 
-#if 0
-    // Add some dummy items
-    wxTreeItemId rootId = m_treeCtrl->AddRoot(_("Configuration"), 0, -1);
-    m_treeCtrl->AppendItem(rootId, _("eCos HAL"), 0, -1);
-    m_treeCtrl->AppendItem(rootId, _("I/O sub-system"), 0, -1);
-    m_treeCtrl->AppendItem(rootId, _("Serial device drivers"), 0, -1);
-    m_treeCtrl->AppendItem(rootId, _("Infrastructure"), 0, -1);
-    m_treeCtrl->AppendItem(rootId, _("eCos kernel"), 0, -1);
-    m_treeCtrl->AppendItem(rootId, _("C library"), 0, -1);
-
-    m_treeCtrl->Expand(rootId);
-#endif
-
     Centre(wxBOTH);
 }
 
@@ -183,57 +170,6 @@ void ecBuildOptionsDialog::CreateControls(wxWindow* parent)
     item5->Add( item9, 1, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxALL, 0 );
 
     item0->Add( item5, 1, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-#if 0
-    wxSizer *item0 = new wxBoxSizer( wxVERTICAL );
-
-    wxSizer *item1 = new wxBoxSizer( wxHORIZONTAL );
-
-    wxStaticText *item2 = new wxStaticText( parent, wxID_STATIC, _("&Category:"), wxDefaultPosition, wxDefaultSize, 0 );
-    item1->Add( item2, 0, wxALIGN_CENTRE|wxALL, 5 );
-
-    wxString strs3[] = 
-    {
-        _("CFLAGS"), 
-        _("LDFLAGS")
-    };
-    wxChoice *item3 = new wxChoice( parent, ecID_BUILD_OPTIONS_CATEGORY, wxDefaultPosition, wxSize(90,-1), 2, strs3, 0 );
-    item1->Add( item3, 0, wxALIGN_CENTRE|wxALL, 5 );
-
-    item1->Add( 20, 20, 20, wxALIGN_CENTRE|wxALL, 5 );
-
-    wxButton *item4 = new wxButton( parent, wxID_OK, _("&Close"), wxDefaultPosition, wxDefaultSize, 0 );
-    item4->SetDefault();
-    item1->Add( item4, 0, wxALIGN_CENTRE|wxALL, 5 );
-
-    item0->Add( item1, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    wxSizer *item5 = new wxBoxSizer( wxHORIZONTAL );
-
-    wxSizer *item6 = new wxBoxSizer( wxVERTICAL );
-
-    wxStaticText *item7 = new wxStaticText( parent, wxID_STATIC, _("&Packages:"), wxDefaultPosition, wxDefaultSize, 0 );
-    item6->Add( item7, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    wxWindow *item8 = parent->FindWindow( ecID_BUILD_OPTIONS_PACKAGES_TREE );
-    wxASSERT( item8 );
-    item6->Add( item8, 10, wxALIGN_CENTRE|wxALL, 5 );
-
-    item5->Add( item6, 0, wxGROW|wxALIGN_CENTER_HORIZONTAL|wxALL, 0 );
-
-    wxSizer *item9 = new wxBoxSizer( wxVERTICAL );
-
-    wxStaticText *item10 = new wxStaticText( parent, wxID_STATIC, _("&Flags:"), wxDefaultPosition, wxDefaultSize, 0 );
-    item9->Add( item10, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-
-    wxString *strs11 = (wxString*) NULL;
-    wxListBox *item11 = new wxListBox( parent, ecID_BUILD_OPTIONS_FLAGS, wxDefaultPosition, wxSize(170,240), 0, strs11, 0 );
-    item9->Add( item11, 0, wxALIGN_CENTRE|wxALL, 5 );
-
-    item5->Add( item9, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 0 );
-
-    item0->Add( item5, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxALL, 5 );
-#endif
 
 #ifdef __WXGTK__
     wxButton *contextButton = new wxContextHelpButton( parent );

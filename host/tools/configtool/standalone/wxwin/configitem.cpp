@@ -441,63 +441,6 @@ wxString ecConfigItem::GetDisplayValue() const
         break;
     }
     return str;
-#if 0
-    switch (GetConfigType())
-    {
-        case ecComponent:
-        case ecContainer:
-            {
-                return wxEmptyString;
-                break;
-            }
-        case ecPackage:
-            {
-                return m_value.GetString();
-                break;
-            }
-        case ecOption:
-            {
-                switch (GetOptionType())
-                {
-                    case ecDouble:
-                        {
-                            wxString val;
-                            val.Printf("%.4lf", (double) m_value.GetDouble());
-                            return val;
-                        }
-                    case ecLong:
-                        {
-                            wxString val;
-                            val.Printf("%.ld", (long) m_value.GetLong());
-                            return val;
-                            break;
-                        }
-                    case ecEnumerated:
-                    case ecString:
-                        {
-                            return m_value.GetString();
-                            break;
-                        }
-                    case ecBool:
-                        {
-                            return wxEmptyString;
-                            break;
-                        }
-                    default:
-                        {
-                            break;
-                        }
-                }
-                break;
-            }
-        default:
-            {
-                break;
-            }
-    }
-
-    return wxEmptyString;
-#endif
 }
 
 // Can we start editing this item?
@@ -1330,19 +1273,6 @@ bool ecConfigItem::BumpItem(int nInc)
     }
     return rc;
 }
-
-#if 0
-
-/* Presumably we don't need this since we use the m_parent member instead
-ecConfigItem *ecConfigItem::Parent() const 
-{ 
-    CTreeCtrl &tree=CConfigTool::GetControlView()->GetTreeCtrl();
-    HTREEITEM hParent=tree.GetParentItem(HItem());
-    return (NULL==hParent||TVI_ROOT==hParent)?NULL:(ecConfigItem *)tree.GetItemData(hParent);
-}
-*/
-
-#endif
 
 /*
  * ecTextEditorCtrl

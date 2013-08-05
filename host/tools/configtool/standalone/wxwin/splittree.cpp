@@ -509,9 +509,6 @@ IMPLEMENT_CLASS(wxThinSplitterWindow, wxSplitterWindow)
 BEGIN_EVENT_TABLE(wxThinSplitterWindow, wxSplitterWindow)
 EVT_SIZE(wxThinSplitterWindow::OnSize)
 // Not in older versions of wxWindows, unfortunately
-#if 0
-EVT_SPLITTER_DOUBLECLICKED(-1, wxThinSplitterWindow::OnDoubleClickSash)
-#endif
 END_EVENT_TABLE()
 
 wxThinSplitterWindow::wxThinSplitterWindow(wxWindow* parent, wxWindowID id,
@@ -659,10 +656,6 @@ void wxSplitterScrolledWindow::OnScroll(wxScrollWinEvent& event)
         inOnScroll = FALSE;
         event.Skip();
         return;
-#if 0
-        int newPos = m_xScrollPosition + nScrollInc;
-        SetScrollPos(wxHORIZONTAL, newPos, TRUE );
-#endif
     }
     else
     {

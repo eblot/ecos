@@ -217,30 +217,6 @@ void ecTemplatesDialog::PopulateControls()
 	const std::vector<std::string> & targets = doc->GetCdlPkgData ()->get_targets ();
 	std::vector<std::string>::const_iterator target_i;
 
-    // Old code: let the combo box do the sorting. But not all platforms implement this.
-#if 0
-    // populate the hardware combo box
-    int nIndex = 0;
-	for (target_i = targets.begin (); target_i != targets.end (); target_i++)
-	{
-		const std::vector<std::string> & aliases = doc->GetCdlPkgData ()->get_target_aliases (* target_i);
-
-		// use the first alias (if any) as the description
-		wxString strTargetDescription = aliases.size () ? aliases [0].c_str () : target_i->c_str ();
-		cdlHardwareCtrl->Append(strTargetDescription, (void*) &(*target_i)); // store the target iterator
-        std::string str(* (target_i));
-		if (m_hardware == str.c_str())            // if current target...
-        {
-            int sel = 0;
-            int i;
-            for (i = 0; i <= nIndex; i++)
-                if (cdlHardwareCtrl->GetClientData(i) == (void*) &(*target_i))
-                    sel = i;
-			cdlHardwareCtrl->SetSelection (sel); // ...select the string
-        }
-        nIndex ++;
-	}
-#else
     // New code: sort, then add to combobox. How do we keep track of the target iterators?
     // could use hash table, assuming that each string is unique
     wxHashTable ht(wxKEY_STRING);
@@ -281,8 +257,6 @@ void ecTemplatesDialog::PopulateControls()
         }
         nIndex ++;
 	}
-
-#endif
 
 	if (-1 == cdlHardwareCtrl->GetSelection ()) // if no target selected...
 		cdlHardwareCtrl->SetSelection (0);          // ...select the first one

@@ -143,40 +143,6 @@ ecPropertyListCtrl::ecPropertyListCtrl(wxWindow* parent, wxWindowID id, const wx
     m_nOnSizeRecursionCount = 0;
 
     AddColumns();
-
-#if 0
-    int j;
-    int i = 0;
-    for (j = 0; j < 4; j++)
-    {
-        
-        // Insert some dummy items
-        
-        wxListItem info;
-        info.m_text = _("URL");
-        info.m_mask = wxLIST_MASK_TEXT ; // | wxLIST_MASK_IMAGE | wxLIST_MASK_DATA;
-        info.m_itemId = i;
-        info.m_image = -1;
-        //info.m_data = (long) doc;
-        
-        long item = InsertItem(info);
-        
-        SetItem(i, 1, _("redirects/interrupts.html"));   
-        i ++;
-        
-        info.m_text = _("Enabled");
-        info.m_mask = wxLIST_MASK_TEXT ; // | wxLIST_MASK_IMAGE | wxLIST_MASK_DATA;
-        info.m_itemId = i;
-        info.m_image = -1;
-        //info.m_data = (long) doc;
-        
-        item = InsertItem(info);
-        
-        SetItem(i, 1, _("True"));
-        i ++;
-    }
-#endif
-
 }
 
 void ecPropertyListCtrl::OnRightClick(wxMouseEvent& event)
@@ -243,8 +209,6 @@ void ecPropertyListCtrl::Fill(ecConfigItem *pti)
                 wxASSERT( FALSE );
                 break;
             }
-            // TODO: set image
-            // SetItem(ecType, ecConfigItem::TreeItemTypeImage[type]);
         }
 
         // List all the properties applicable to me
@@ -293,9 +257,6 @@ void ecPropertyListCtrl::Fill(ecConfigItem *pti)
                     bool bConflictItem =
                         //					PropertyInConflictsList (* property_i, config->get_structural_conflicts ()) || ignore for now
                         PropertyInConflictsList (prop, config->get_all_conflicts ());
-
-                    // TODO: set the image for a conflict item
-                    // CListCtrl::SetItem (nIndex, 0, LVIF_IMAGE, NULL, bConflictItem ? 1 : 0, 0, 0, 0 );
                 }
             }
         }
@@ -308,15 +269,6 @@ void ecPropertyListCtrl::Fill(ecConfigItem *pti)
                 }
             }
         }
-        // TODO
-#if 0
-        CRect rect;
-        GetClientRect(rect);
-        int nAvailWidth=rect.Width()-GetColumnWidth(0);
-        int w=max(m_nMaxValueWidth,nAvailWidth);
-        m_f[1]=double(w)/double(rect.Width());
-        SetColumnWidth(1,w); 
-#endif
     }
 
     SetColumnWidth(1, wxLIST_AUTOSIZE); // resize the value column for the longest item
@@ -357,9 +309,6 @@ void ecPropertyListCtrl::RefreshValue()
         bool bConflictItem =
             //						PropertyInConflictsList (property, config->get_structural_conflicts ()) || ignore for now
             PropertyInConflictsList (property, config->get_all_conflicts ());
-        
-        // TODO
-        // CListCtrl::SetItem (nItem, 0, LVIF_IMAGE, NULL, bConflictItem ? 1 : 0, 0, 0, 0 );
     }
     
 }
@@ -389,15 +338,6 @@ int ecPropertyListCtrl::SetItem(const wxString& item, const wxString& value, int
     
     wxListCtrl::SetItem(nIndex, 1, value);
 
-    // TODO
-#if 0
-    CDC *pDC=GetDC();
-    CFont *pOldFont=pDC->SelectObject(GetFont());
-    m_nMaxValueWidth=max(m_nMaxValueWidth,pDC->GetTextExtent(pszValue).cx);
-    pDC->SelectObject(pOldFont);
-    ReleaseDC(pDC);
-#endif
-
     return nIndex;
 }
 
@@ -417,38 +357,5 @@ void ecPropertyListCtrl::OnDoubleClick(wxMouseEvent& event)
         }
     }
 
-    // TODO
-#if 0    
-    int pos=GetMessagePos();
-    CPoint pt(GET_X_LPARAM(pos),GET_Y_LPARAM(pos));
-    ScreenToClient(&pt);
-    int nItem=HitTest(pt,NULL);
-    
-    if(GetItemData(nItem)>1){
-        // This is a property row
-        const CdlGoalExpression goal = dynamic_cast<CdlGoalExpression> ((CdlProperty) GetItemData (nItem));
-        if (goal){
-            // This is a rule row
-            const CdlExpression expression = goal->get_expression ();
-            if (1 == expression->references.size ()) // if the property contains a single reference
-            {
-                // assume that the reference is to another user visible node and try to find it
-                std::string macro_name = expression->references [0].get_destination_name ();
-                CConfigItem * pItem = CConfigTool::GetConfigToolDoc ()->Find (CString (macro_name.c_str ()));
-                if (pItem) // the referenced node was found so select it
-                {
-                    CConfigTool::GetControlView()->GetTreeCtrl().SelectItem(pItem->HItem());
-                }
-            }
-        }
-    } else {
-        const CString strText(GetItemText(nItem,0));
-        if(strText==FieldTypeImage[File]){
-            m_pti->ViewHeader();
-        } else if (strText==FieldTypeImage[URL]) {
-            m_pti->ViewURL();
-        }
-    }
-#endif
     event.Skip();
 }
