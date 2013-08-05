@@ -69,7 +69,7 @@
 #define CYG_UIO_TAG uio
 #define CYG_FILEOPS_TAG fileops
 #define CYG_FILE_TAG file
-#define CYG_SELINFO_TAG selinfo
+//#define CYG_SELINFO_TAG selinfo // C++ conflict, do not use
 
 #include <cyg/fileio/fileio.h>
 
@@ -80,8 +80,9 @@
 #define FASYNC     CYG_FASYNC
 
 // Type of "file"
-#define	DTYPE_VNODE	CYG_FILE_TYPE_FILE	/* file */
-#define	DTYPE_SOCKET	CYG_FILE_TYPE_SOCKET	/* communications endpoint */
+#define	DTYPE_VNODE     CYG_FILE_TYPE_FILE      /* file */
+#define	DTYPE_SOCKET    CYG_FILE_TYPE_SOCKET	/* communications endpoint */
+#define DTYPE_PIPE      CYG_FILE_TYPE_PIPE      /* pipe channel */
 
 //==========================================================================
 // Otherwise define all the structs here...
@@ -147,9 +148,9 @@ struct file {
 #define FALLOC     0x80         // File is "busy", i.e. allocated
 
 // Type of "file"
-#define	DTYPE_VNODE	1	/* file */
-#define	DTYPE_SOCKET	2	/* communications endpoint */
-#define	DTYPE_PIPE	3	/* pipe */
+#define	DTYPE_VNODE     1	/* file */
+#define	DTYPE_SOCKET    2	/* communications endpoint */
+#define	DTYPE_PIPE      3	/* pipe */
 
 externC cyg_bool getfp(int fdes, struct file **fp);
 externC int falloc(struct file **fp, int *fd);
