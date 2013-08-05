@@ -50,6 +50,8 @@
  * =================================================================
  */
 
+#include <cyg/objloader/objelf.h>
+
 PELF_OBJECT cyg_ldr_open_library_fs(char *);
 void cyg_ldr_close_library_fs(PELF_OBJECT);
 

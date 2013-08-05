@@ -50,6 +50,8 @@
  * =================================================================
  */
 
+#include <cyg/infra/cyg_type.h>
+
 typedef cyg_uint32     Elf32_Addr;
 typedef cyg_uint16     Elf32_Half;
 typedef cyg_uint32     Elf32_Off;

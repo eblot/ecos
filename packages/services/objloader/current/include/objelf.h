@@ -56,6 +56,8 @@
 #include <pkgconf/system.h>
 #include <pkgconf/objloader.h>
 #include <cyg/hal/hal_tables.h>
+#include <cyg/infra/cyg_type.h>
+#include <cyg/objloader/elf.h>
 
 //==============================================================================
 

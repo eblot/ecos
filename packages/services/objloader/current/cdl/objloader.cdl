@@ -52,8 +52,8 @@ cdl_package CYGPKG_OBJLOADER {
     description   "This package provides support for loading and relocating 
                    object files within eCos."
     include_dir   cyg/objloader
-    include_files elf.h objelf.h loader_fs.h relocate_ppc.h relocate_i386.h
-    include_files relocate_arm.h loader_memory.h
+    include_files elf.h objelf.h loader_fs.h loader_memory.h \
+                  relocate_ppc.h relocate_i386.h relocate_arm.h
     compile       objloader.c objelf.c
     requires      CYGPKG_MEMALLOC
 # ====================================================================
@@ -198,14 +198,14 @@ cdl_package CYGPKG_OBJLOADER {
 
         make -priority 322 {
             <PREFIX>/include/cyg/objloader/testromfs_be.h : testobj/hello.o
-            $(PREFIX)/bin/mk_romfs -b $(dir $<) testromfs_be.bin
+            @$(PREFIX)/bin/mk_romfs -b $(dir $<) testromfs_be.bin
             @mkdir -p "$(dir $@)"
             @tclsh $(PREFIX)/bin/file2c.tcl testromfs_be.bin $@
         }
         
         make -priority 322 {
             <PREFIX>/include/cyg/objloader/testromfs_le.h : testobj/hello.o
-            $(PREFIX)/bin/mk_romfs $(dir $<) testromfs_le.bin
+            @$(PREFIX)/bin/mk_romfs $(dir $<) testromfs_le.bin
             @mkdir -p "$(dir $@)"
             @tclsh $(PREFIX)/bin/file2c.tcl testromfs_le.bin $@
         }

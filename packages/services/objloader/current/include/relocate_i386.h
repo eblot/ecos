@@ -52,6 +52,10 @@
  * =================================================================
  */
 
+#include <pkgconf/system.h>
+
+#if defined(CYGPKG_HAL_I386) || defined(CYGPKG_HAL_SYNTH_I386)
+
 #define Elf_Rel                0
 #define Elf_Rela               1
 
@@ -65,5 +69,7 @@
 void      cyg_ldr_flush_cache(void);
 cyg_int32 cyg_ldr_relocate(cyg_int32, cyg_uint32, cyg_int32);
 extern char *relocation_name[];
+
+#endif // CYGPKG_HAL_I386 || CYGPKG_HAL_SYNTH_I386
 
 #endif //__RELOCATE_I386_H__

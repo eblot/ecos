@@ -53,24 +53,12 @@
  */
 
 #include <cyg/infra/diag.h>     // For diagnostic printing.
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-
 #include <cyg/hal/hal_cache.h>
 #include <cyg/hal/hal_io.h>
 
 #include <pkgconf/objloader.h>
 #include <cyg/objloader/elf.h>
 #include <cyg/objloader/objelf.h>
-
-#ifdef CYGPKG_HAL_ARM
-void
-cyg_ldr_flush_cache(void)
-{
-    HAL_DCACHE_SYNC();
-    HAL_ICACHE_SYNC();
-}
 
 #if CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL > 1
 // Always 16 characters long, with blank padding is necessary, so
@@ -86,6 +74,17 @@ char *relocation_name[] =
 };
 #endif
 
+#if defined(CYGPKG_HAL_ARM)
+
+void
+cyg_ldr_flush_cache(void)
+{
+    HAL_DCACHE_SYNC();
+    HAL_ICACHE_SYNC();
+}
+
+// in:
+// 
 // sym_type  Type of relocation to apply,
 // mem       Address in memory to modify (relocate).
 // sym_value The value of the symbol to use for the relocation.
@@ -96,38 +95,57 @@ char *relocation_name[] =
 cyg_int32 
 cyg_ldr_relocate(cyg_int32 sym_type, cyg_uint32 mem, cyg_int32 sym_value)
 {
-    cyg_int32 offset;
-    volatile cyg_uint32 *mem_addr = (cyg_uint32 *)mem;
-
-    switch(sym_type)
+    cyg_int32  i, rel_offset;
+    
+    // ARM uses rel, so we don't have to add the addend.
+    switch( sym_type )
     {
-    case R_ARM_ABS32:
-        offset = *mem_addr;
-        *mem_addr = offset + sym_value;
-        break;
-    case R_ARM_PC24:
-    case R_ARM_CALL:
-    case R_ARM_JUMP24:
-        offset = (*mem_addr & 0x00FFFFFF) << 2;
-        if (offset & 0x02000000)
-            offset -= 0x04000000;     // Sign extend.
-        *mem_addr &= 0xff000000;      // Mask off the entire offset bits.
-        offset = sym_value - mem + offset;  // This is the new offset.
-        if ((offset & 0x03) || (offset >= (cyg_int32)0x04000000) ||
-                                (offset <= (cyg_int32)0xFC000000))
-            return -1;                                     
-        *mem_addr |= (offset >> 2) & 0x00FFFFFF;
-        break;
-    case R_ARM_V4BX:
-        // For now only ARMv4T and later cores (with Thumb) are supported.
-        break;
+    case R_ARM_ABS32: // [2]
+        HAL_READ_UINT32(mem , i);
+        HAL_WRITE_UINT32(mem, i + sym_value);
+        return 0;
+    case R_ARM_PC24: // Arm B/BL instruction [1]
+    #ifdef CYGBLD_HAL_ARM_EABI
+    // the following symbols work as the OABI R_ARM_PC24
+    // check out http://sourceware.org/ml/binutils/2004-10/msg00450.html 
+    case R_ARM_CALL: // [28]
+    case R_ARM_JUMP24: // [29]
+    #endif // CYGBLD_HAL_ARM_EABI
+        {
+            #define OFFSET_MASK ((1<<24)-1)
+            // read the current opcode
+            HAL_READ_UINT32(mem, i);
+            // compute the relative offset (2's complement)
+            rel_offset = sym_value - mem;
+            // the MSB contains the instruction:
+            //   1st nibble is the condition, 2nd nibble is the instruction
+            cyg_uint32 instr = i & ~OFFSET_MASK;
+            // the 3 LSB contains the PC-relative offset, /4
+            cyg_uint32 offset = (i & OFFSET_MASK)<<2;
+            // update the new offset
+            offset += rel_offset;
+            // apply the /4 factor back
+            offset >>= 2;
+            // truncate the offset to be sure it does not overlap with the
+            // instruction
+            offset &= OFFSET_MASK;
+            HAL_WRITE_UINT32(mem, instr | offset);
+            return 0;
+        }
+    case R_ARM_V4BX: // [40]
+        HAL_READ_UINT32(mem , i);
+        // Preserve Rm and the condition code
+        i &= 0xf000000f;
+        // Alter other bits to re-code instruction as MOV PC,Rm.
+        i |= 0x01a0f000;
+        HAL_WRITE_UINT32(mem , i);
+        return 0;
     default:
-        CYG_ASSERT(0, ("FIXME: Unknown relocation value!!!\r\n"));
+        #if CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL > 0
+        diag_printf("FIXME: Unknown relocation type: %d\n", (int)sym_type);
+        #endif // CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL
         return -1;
     }
-    return 0;
 }
 
 #endif // CYGPKG_HAL_ARM
-
-

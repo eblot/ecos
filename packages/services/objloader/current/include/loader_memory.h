@@ -53,6 +53,8 @@
  * =================================================================
  */
 
+#include <cyg/objloader/objelf.h>
+
 PELF_OBJECT cyg_ldr_open_library_memory(CYG_ADDRWORD);
 void cyg_ldr_close_library_memory(PELF_OBJECT);
 

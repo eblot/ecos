@@ -152,7 +152,7 @@ cyg_uint32
     //  in the sections[] array.
     if (p->sections[idx] != 0)
         return p->sections[idx];
-    p->sections[idx] = (cyg_uint32)cyg_ldr_malloc(p->p_sechdr[idx].sh_size);
+    p->sections[idx] = (cyg_uint32 *)cyg_ldr_malloc(p->p_sechdr[idx].sh_size);
     CYG_ASSERT(p->sections[idx] != 0, "Cannot malloc() section");
     if (p->sections[idx] == 0)
     {
@@ -290,7 +290,7 @@ cyg_ldr_load_sections(PELF_OBJECT p)
     // Load the section header string table. This is a byte oriented table,
     //  so alignment is not an issue.
     idx = p->p_elfhdr->e_shstrndx;
-    cyg_uint32 section_addr = cyg_ldr_load_elf_section(p, idx);
+    cyg_uint32 * section_addr = cyg_ldr_load_elf_section(p, idx);
     if (section_addr == 0)
         return -1;
     return 0;
@@ -408,8 +408,15 @@ cyg_ldr_open_library(CYG_ADDRWORD ptr, cyg_int32 mode)
                               e_obj->p_sechdr[e_obj->hdrndx_symtab].sh_entsize;
         Elf32_Sym *p_symtab = (Elf32_Sym*)e_obj->sections[e_obj->hdrndx_symtab];
     
+#if CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL > 2
+        diag_printf("Num   Value   Size Ndx Name\n"); 
+#endif
         for (i = 1; i < symtab_entries; i++)
         {
+#if CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL > 2
+            cyg_uint8 *p_strtab = (cyg_uint8*)cyg_ldr_section_address(e_obj, 
+                                                        e_obj->hdrndx_strtab);
+#endif        
             if (p_symtab[i].st_shndx == SHN_COMMON)
             {             
                 cyg_uint32 boundary = p_symtab[i].st_value - 1;
@@ -419,21 +426,47 @@ cyg_ldr_open_library(CYG_ADDRWORD ptr, cyg_int32 mode)
                 p_symtab[i].st_value = com_offset;
                 com_offset += p_symtab[i].st_size;
             }
-        }    
-#if CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL > 1
-        diag_printf("\n"); 
+    
+#if CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL > 2
+            diag_printf("%03d  %08X %04X %03d %s\n", 
+                         i, 
+                         p_symtab[i].st_value,
+                         p_symtab[i].st_size,
+                         p_symtab[i].st_shndx,
+                         p_strtab + p_symtab[i].st_name);
 #endif        
+        }    
     }
 
-#if CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL > 0
+#if CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL > 2
     cyg_ldr_print_section_data(e_obj);
-#if CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL > 1
+#if CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL > 3
     cyg_ldr_print_symbol_names(e_obj);
 #endif    
 #endif    
 
     for (i = 1; i < e_obj->p_elfhdr->e_shnum; i++)
     {
+        char  *p_strtab = (char*)e_obj->sections[e_obj->p_elfhdr->e_shstrndx];
+#if CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL > 1
+        diag_printf("SECTION \"%s\" %p, size %u, type 0x%0x\n",
+            p_strtab+e_obj->p_sechdr[i].sh_name,
+            (void *)e_obj->p_sechdr[i].sh_name, 
+            e_obj->p_sechdr[i].sh_size,
+            e_obj->p_sechdr[i].sh_type);
+#endif // CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL
+        if ( (e_obj->p_sechdr[i].sh_type == SHT_NOBITS) &&
+             !strncmp(p_strtab+e_obj->p_sechdr[i].sh_name, ELF_STRING_bss,
+                      sizeof(ELF_STRING_bss)) )
+        {
+            // Need to zero up the .BSS segment
+            cyg_uint32 * start = cyg_ldr_section_address(e_obj, i);
+#if CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL > 1
+            diag_printf(".BSS START @ %p, END @ %p\n",
+                        start, start+e_obj->p_sechdr[i].sh_size);
+#endif // CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL
+            memset(start, 0x0, e_obj->p_sechdr[i].sh_size);
+        }
         // Find all the '.rel' or '.rela' sections and relocate them.
         if ((e_obj->p_sechdr[i].sh_type == SHT_REL) ||
                                   (e_obj->p_sechdr[i].sh_type == SHT_RELA))

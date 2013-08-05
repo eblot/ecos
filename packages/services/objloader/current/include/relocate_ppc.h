@@ -52,6 +52,10 @@
  * =================================================================
  */
 
+#include <pkgconf/system.h>
+
+#ifdef CYGPKG_HAL_POWERPC
+
 #define Elf_Rel                0
 #define Elf_Rela               1
 #define ELF_ARCH_MACHINE_TYPE  20    // PowerPC.
@@ -126,5 +130,7 @@
 void      cyg_ldr_flush_cache( void );
 cyg_int32 cyg_ldr_relocate( cyg_int32, cyg_uint32, cyg_int32 );
 extern char *relocation_name[];
+
+#endif // CYGPKG_HAL_POWERPC
 
 #endif //__RELOCATE_PPC_H__

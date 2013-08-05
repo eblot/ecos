@@ -99,7 +99,6 @@ cyg_ldr_print_symbol_names(PELF_OBJECT p)
     int        i;
     Elf32_Sym *p_symtab = (Elf32_Sym*)p->sections[p->hdrndx_symtab];
     char      *p_strtab = (char*)p->sections[p->hdrndx_strtab];
-//    char       strname[32];
 
     // Total number of entries in the symbol table.
     int symtab_entries = p->p_sechdr[p->hdrndx_symtab].sh_size / 
@@ -192,7 +191,9 @@ cyg_ldr_print_rel_names(PELF_OBJECT p)
             //  be dumped.
             cyg_ldr_delete_elf_section(p, i);
         } 
-    }    
+    }
+
+	return 0;
 }
 #endif // DEBUG_PRINT
 
@@ -302,12 +303,12 @@ cyg_ldr_relocate_section(PELF_OBJECT p, cyg_uint32 r_shndx)
         return -1;
 #endif
 
-#if CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL > 0
-    Elf32_Sym *p_symtab = (Elf32_Sym *)cyg_ldr_section_address(p, 
-                                                           p->hdrndx_symtab);
-    char *p_strtab = (char *)cyg_ldr_section_address(p, p->hdrndx_strtab);
     char *p_shstrtab = (char *)cyg_ldr_section_address(p, 
                                                        p->p_elfhdr->e_shstrndx);
+#if CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL > 1
+    char *p_strtab = (char *)cyg_ldr_section_address(p, p->hdrndx_strtab);
+    Elf32_Sym *p_symtab = (Elf32_Sym *)cyg_ldr_section_address(p, 
+                                                           p->hdrndx_symtab);
 #endif
 
     // Now we can get the address of the contents of the section to modify.
@@ -315,11 +316,27 @@ cyg_ldr_relocate_section(PELF_OBJECT p, cyg_uint32 r_shndx)
     cyg_uint32 r_target_addr  = (cyg_uint32)cyg_ldr_section_address(p, 
                                                                 r_target_shndx);
 
+    // Loading some of the DEBUG section lead to a DATA ABORT:
+    // maybe the initialization order should be reworked. Meanwhile, we 
+    // simply disable those sections
+    #define DEBUG_SECTION_PREFIX ".debug"
+    if ( ! strncmp(p_shstrtab + p->p_sechdr[r_target_shndx].sh_name,
+                   DEBUG_SECTION_PREFIX, sizeof(DEBUG_SECTION_PREFIX)-1) )
+    {
+#if CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL > 0
+        diag_printf("Discarding section %s\n", 
+                    p_shstrtab + p->p_sechdr[r_target_shndx].sh_name);
+#endif // CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL
+        // After the relocation is done, the relocation table can be dumped.
+        cyg_ldr_delete_elf_section(p, r_shndx);
+        return 0;
+    }
+
 #if CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL > 0
     diag_printf("Relocating section \"%s\"\n",
             p_shstrtab + p->p_sechdr[r_target_shndx].sh_name);
-    diag_printf("----------------------------------------\n"); 
 #if CYGPKG_SERVICES_OBJLOADER_DEBUG_LEVEL > 1
+    diag_printf("----------------------------------------\n"); 
     diag_printf(" Ndx  Type             Offset    Name\n");
 #endif
 #endif
