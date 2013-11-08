@@ -39,6 +39,7 @@
 #include <cstring>
 #include <sys/param.h>
 #include <unistd.h> /* for realpath() */
+#include <stdlib.h>
 #endif
 #ifdef __CYGWIN__
 // suppress min/max macro definitions in windef.h

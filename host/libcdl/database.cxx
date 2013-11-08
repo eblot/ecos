@@ -59,7 +59,7 @@
 
 // strcmp() is useful when dealing with Tcl strings.
 #include <cstring>
-
+#include <stdlib.h>
 //}}}
 
 //{{{  Statics                                                  

@@ -55,7 +55,8 @@
 // the class definitions rely on these headers. It also brings
 // in <tcl.h>
 #include <cdlcore.hxx>
-
+#include <string.h>
+#include <stdlib.h>
 //}}}
 
 //{{{  Statics                                                  
