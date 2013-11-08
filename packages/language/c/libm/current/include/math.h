@@ -123,20 +123,20 @@ CYGBLD_LIBM_INLINE float _fun##f(float x, int *y)  \
 #else
 
 #define CYGDCL_LIBM_IEEE_API_INLINE_F(_fun) \
-externC inline double _fun(double);         \
-externC float inline _fun##f(float);
+externC double _fun(double);         \
+externC float _fun##f(float);
 
 #define CYGDCL_LIBM_IEEE_API_INLINE_FF(_fun) \
-externC inline double _fun(double, double);  \
-externC inline float _fun##f(float, float);
+externC double _fun(double, double);  \
+externC float _fun##f(float, float);
 
 #define CYGDCL_LIBM_IEEE_API_INLINE_IF(_fun) \
-externC inline double _fun(int, double);     \
-externC inline float _fun##f(int, float);
+externC double _fun(int, double);     \
+externC float _fun##f(int, float);
 
 #define CYGDCL_LIBM_IEEE_API_INLINE_FIP(_fun) \
-externC inline double _fun(double, int *);    \
-externC inline float _fun##f(float, int *);
+externC double _fun(double, int *);    \
+externC float _fun##f(float, int *);
 
 #endif
 
