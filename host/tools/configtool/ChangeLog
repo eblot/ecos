@@ -127,7 +127,7 @@
 	* standalone/wxwin/configtool.cpp: Search for the eCos repository if
 	the saved location no-longer exists. [ Bugzilla 1000465 ]
  
-2008-10-14  Emmanuel Blot <manu.blot@gmail.com>
+2008-10-14  Emmanuel Blot <emmanuel.blot@free.fr>
 
     * common/common/build.cxx: Enable silent build with optional verbose
     mode
