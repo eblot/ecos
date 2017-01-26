@@ -1,7 +1,7 @@
 // ####ECOSHOSTGPLCOPYRIGHTBEGIN####                                        
 // -------------------------------------------                              
 // This file is part of the eCos host tools.                                
-// Copyright (C) 1998, 1999, 2000 Free Software Foundation, Inc.            
+// Copyright (C) 1998, 1999, 2000, 2014 Free Software Foundation, Inc.            
 //
 // This program is free software; you can redistribute it and/or modify     
 // it under the terms of the GNU General Public License as published by     
@@ -357,7 +357,7 @@ wxString ecRunTestsDialog::TranslatePort(const wxString& port) const
 
 void ecRunTestsDialog::SubmitTests()
 {
-    int iTest;
+//    int iTest;
     int nResources=wxGetApp().GetSettings().GetRunTestsSettings().m_bRemote ? wxMax(1,CTestResource::GetMatchCount (m_ep)):1;
     if(nResources>CeCosTest::InstanceCount){
         if (m_nNextToSubmit >= m_executables->SelectedTestCount()){
@@ -656,6 +656,7 @@ void ecRunTestsExecutablesDialog::CreateControls( wxPanel *parent)
 
     parent->SetAutoLayout( TRUE );
     parent->SetSizer( item0 );
+    CYG_UNUSED_PARAM(wxCheckListBox *, listBox);
 }
 
 void ecRunTestsExecutablesDialog::OnCheckAll(wxCommandEvent& event)
